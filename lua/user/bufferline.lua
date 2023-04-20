@@ -2,15 +2,46 @@ local status_ok, bufferline = pcall(require, "bufferline")
 if not status_ok then
   return
 end
+local util = require("lspconfig").util
 
 bufferline.setup {
   options = {
+    mode = "tabs", -- "tabs" | "buffers" | "hidden" | "custom",
     close_command = "Bdelete! %d", -- can be a string | function, see "Mouse actions"
     right_mouse_command = "Bdelete! %d", -- can be a string | function, see "Mouse actions"
     offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
     separator_style = "thin", -- | "thick" | "thin" | { 'any', 'any' },
+    groups = {
+      options = {
+        toggle_hidden_on_enter = true, -- when you re-enter a hidden group this options re-opens that group so the buffer is visible
+      },
+      items = {
+        {
+          name = "Tests", -- Mandatory
+          highlight = { underline = true, sp = "blue" }, -- Optional
+          priority = 2, -- determines where it will appear relative to other groups (Optional)
+          icon = "", -- Optional
+          matcher = function(buf) -- Mandatory
+            vim.notify(vim.inspect(buf), vim.log.levels.ERROR)
+            -- return buf.filename:match "%.test" or buf.filename:match "%.spec"
+            return true
+          end,
+        },
+        {
+          name = "Components",
+          highlight = { undercurl = true, sp = "green" },
+          auto_close = false, -- whether or not close this group if it doesn't contain the current buffer
+          matcher = function(buf)
+            vim.notify(vim.inspect(buf), vim.log.levels.ERROR)
+            return buf.filename:match "%components"
+          end,
+          separator = { -- Optional
+            style = require("bufferline.groups").separator.tab,
+          },
+        },
+      },
+    },
   },
-
   highlights = {
     fill = {
       fg = { attribute = "fg", highlight = "Tabline" },

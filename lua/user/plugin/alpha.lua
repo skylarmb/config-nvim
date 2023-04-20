@@ -1,0 +1,24 @@
+return {
+  -- {
+  --   "goolord/alpha-nvim",
+  --   config = function()
+  --     local handle = io.popen "fortune -s 100% computers | cowsay | sed 's/ *$//'"
+  --     local result = handle:read "*a"
+  --     handle:close()
+  --     local dashboard = require "alpha.themes.dashboard"
+  --     dashboard.section.header.val = result
+  --     dashboard.section.buttons.val = {
+  --       dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
+  --       dashboard.button("e", " " .. " New file", ":ene <BAR> startinsert <CR>"),
+  --       dashboard.button("w", " " .. " Open workspace", ":Telescope workspaces<CR>"),
+  --       dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
+  --       dashboard.button("t", " " .. " Find text", ":Telescope live_grep <CR>"),
+  --       dashboard.button("c", " " .. " Config", ":e ~/.config/nvim/lua/user <CR>"),
+  --     }
+  --     dashboard.section.header.opts.hl = "Special"
+  --     dashboard.section.buttons.opts.hl = "Keyword"
+  --     dashboard.opts.opts.noautocmd = true
+  --     require("alpha").setup(dashboard.opts)
+  --   end,
+  -- },
+}
