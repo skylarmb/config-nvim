@@ -19,12 +19,12 @@ vim.api.nvim_create_user_command("FindFiles", function()
 end, {})
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "qf", "help", "man", "lspinfo", "spectre_panel" },
+  pattern = { "qf", "help", "man", "lspinfo", "spectre_panel", "veil", "NvimTree" },
   callback = function()
-    vim.cmd [[
-      nnoremap <silent> <buffer> q :close<CR>
-      set nobuflisted
-    ]]
+    vim.cmd "setlocal nonumber colorcolumn="
+    vim.cmd "set nobuflisted"
+    vim.keymap.set("n", "qq", "<cmd>cclose<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("n", "q", "<cmd>cclose<CR>", { noremap = true, silent = true, buffer = true })
   end,
 })
 
@@ -33,16 +33,6 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
     vim.cmd "silent! cd %:p:h"
   end,
 })
-
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "qf" },
-  callback = function()
-    vim.cmd "setlocal nonumber colorcolumn="
-    vim.keymap.set("n", "qq", "<cmd>cclose<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set("n", "q", "<cmd>cclose<CR>", { noremap = true, silent = true, buffer = true })
-  end,
-})
-
 
 -- help window in new split
 vim.api.nvim_create_autocmd({ "FileType" }, {

@@ -56,7 +56,71 @@ return {
     "SmiteshP/nvim-navic",
     event = "User FileOpened",
   },
-  -- file tree
-  { "kyazdani42/nvim-tree.lua" },
-  { "kyazdani42/nvim-web-devicons" },
+  -- start screen
+  {
+    "willothy/veil.nvim",
+    dependencies = {
+      -- All optional, only required for the default setup.
+      -- If you customize your config, these aren't necessary.
+      "nvim-telescope/telescope.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope-file-browser.nvim",
+    },
+    config = function()
+      local builtin = require "veil.builtin"
+      local current_day = os.date "%A"
+      require("veil").setup {
+        sections = {
+          builtin.sections.oldfiles(),
+          builtin.sections.buttons {
+            {
+              icon = "",
+              text = "Find Files",
+              shortcut = "p",
+              callback = function()
+                require("telescope.builtin").find_files()
+              end,
+            },
+            {
+              icon = "",
+              text = "Find Word",
+              shortcut = "f",
+              callback = function()
+                require("telescope.builtin").live_grep()
+              end,
+            },
+            {
+              icon = "󱏔",
+              text = "Workspaces",
+              shortcut = "w",
+              callback = function()
+                require("telescope.builtin").buffers()
+              end,
+            },
+            {
+              icon = "",
+              text = "Diagnostics",
+              shortcut = "d",
+              callback = function()
+                require("telescope.builtin").buffers()
+              end,
+            },
+            {
+              icon = "",
+              text = "Config",
+              shortcut = "c",
+              callback = function()
+                require("telescope").extensions.file_browser.file_browser {
+                  path = vim.fn.stdpath "config",
+                }
+              end,
+            },
+          },
+        },
+        mappings = {},
+        startup = true,
+        listed = false,
+      }
+    end,
+  },
 }

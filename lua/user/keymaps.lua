@@ -106,7 +106,7 @@ keymap("n", "<C-l>", "<cmd>NvimTmuxNavigateRight<cr>")
 -- redo with U
 keymap("n", "U", "<C-r>")
 -- close buffers
-keymap("n", "qq", "m'<cmd>Bdelete!<CR>")
+keymap("n", "qq", "m'<cmd>close<CR>")
 keymap("n", "qa", "m'<cmd>qa<CR>")
 -- ww to write from normal mode
 keymap("n", "ww", "<cmd>w<cr>")
@@ -178,9 +178,11 @@ keymap("n", "<leader>cdf", ":cd %:h<CR>")
 -- change vim working dir to current buffer parent dir
 keymap("n", "<leader>cdu", ":cd %:p<CR>")
 -- recently edited files
-keymap("n", "z", ":Telescope oldfiles<cr>")
+keymap("n", "z", "<cmd>Telescope oldfiles<cr>")
 -- file tree
-keymap("n", "`", ":NvimTreeFindFileToggle<cr>")
+keymap("n", "`", "<cmd>NvimTreeFindFileToggle<cr>")
+-- sidebar
+keymap("n", "<leader>`", "<cmd>SidebarNvimToggle<cr>")
 
 ------------ Git ------------
 -- change vim working dir to current git root
@@ -195,11 +197,11 @@ keymap("n", "<leader>gd", ":Gdiff<CR>")
 -- open Trouble quickfix window
 -- keymap("n", "<leader>t", "<cmd>TroubleToggle workspace_diagnostics<CR>")
 -- if vim.g.neovide then
-keymap("n", "<D-s>", ":w<CR>")      -- Save
-keymap("v", "<D-c>", '"+y')         -- Copy
-keymap("n", "<D-v>", '"+P')         -- Paste normal mode
-keymap("v", "<D-v>", '"+P')         -- Paste visual mode
-keymap("c", "<D-v>", "<C-R>+")      -- Paste command mode
+keymap("n", "<D-s>", ":w<CR>") -- Save
+keymap("v", "<D-c>", '"+y') -- Copy
+keymap("n", "<D-v>", '"+P') -- Paste normal mode
+keymap("v", "<D-v>", '"+P') -- Paste visual mode
+keymap("c", "<D-v>", "<C-R>+") -- Paste command mode
 keymap("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert modeend
 -- end
 

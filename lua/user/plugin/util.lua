@@ -1,6 +1,9 @@
 return {
   -- session management
-  { "rmagatti/auto-session" }, -- session management
+  {
+    "rmagatti/auto-session",
+    cmd = { "SaveSession", "DeleteSession", "RestoreSession" },
+  }, -- session management
   -- repl / debugger
   { "tpope/vim-scriptease", event = "VeryLazy", ft = { "lua", "viml" } }, -- lua/viml repl / debugger
   -- Bdelete!

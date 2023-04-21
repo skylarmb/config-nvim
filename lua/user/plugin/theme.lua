@@ -26,6 +26,11 @@ return {
       vim.api.nvim_set_hl(0, "BufferLineTabSeparator", { link = "Delimiter" })
       vim.api.nvim_set_hl(0, "BufferLineBackground", { link = "Delimiter" })
       vim.api.nvim_set_hl(0, "BufferLineFill", { link = "Delimiter" })
+      vim.api.nvim_set_hl(0, "SidebarNvimLineNr", { link = "CursorLineNr" })
+      vim.api.nvim_set_hl(0, "SidebarNvimLspDiagnosticsError", { link = "DiagnosticSignError" })
+      vim.api.nvim_set_hl(0, "SidebarNvimLspDiagnosticsWarning", { link = "DiagnosticSignWarn" })
+      vim.api.nvim_set_hl(0, "SidebarNvimLspDiagnosticsInfo", { link = "DiagnosticSignWarn" })
+      vim.api.nvim_set_hl(0, "SidebarNvimLspDiagnosticsHint", { link = "DiagnosticSignHint" })
     end,
   },
   -- show hex colors

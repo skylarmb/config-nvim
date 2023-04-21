@@ -102,7 +102,7 @@ local function setup_lsp()
       -- formatting.prettier,
       formatting.prettierd,
 
-      -- formatting.eslint_d,
+      formatting.eslint_d,
       diagnostics.eslint_d,
       code_actions.eslint_d,
 
@@ -147,9 +147,9 @@ return {
       { "jose-elias-alvarez/null-ls.nvim" },
       { "jay-babu/mason-null-ls.nvim" },
       -- Autocompletion
-      { "hrsh7th/nvim-cmp" }, -- Required
+      { "hrsh7th/nvim-cmp" },     -- Required
       { "hrsh7th/cmp-nvim-lsp" }, -- Required
-      { "L3MON4D3/LuaSnip" }, -- Required
+      { "L3MON4D3/LuaSnip" },     -- Required
     },
     config = setup_lsp,
   },
@@ -172,29 +172,29 @@ return {
     },
     config = function()
       return {
-        width = 80, -- Width of the floating window
-        height = 15, -- Height of the floating window
+        width = 80,                                          -- Width of the floating window
+        height = 15,                                         -- Height of the floating window
         border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }, -- Border characters of the floating window
-        default_mappings = false, -- Bind default mappings
-        debug = false, -- Print debug information
-        opacity = nil, -- 0-100 opacity level of the floating window where 100 is fully transparent.
-        resizing_mappings = false, -- Binds arrow keys to resizing the floating window.
-        post_open_hook = nil, -- A
-        references = { -- Configure the telescope UI for slowing the references cycling window.
+        default_mappings = false,                            -- Bind default mappings
+        debug = false,                                       -- Print debug information
+        opacity = nil,                                       -- 0-100 opacity level of the floating window where 100 is fully transparent.
+        resizing_mappings = false,                           -- Binds arrow keys to resizing the floating window.
+        post_open_hook = nil,                                -- A
+        references = {                                       -- Configure the telescope UI for slowing the references cycling window.
           telescope = require("telescope.themes").get_dropdown { hide_preview = false },
         },
         -- These two configs can also be passed down to the goto-preview definition and implementation calls for one off "peak" functionality.
-        focus_on_open = false, -- Focus the floating window when opening it.
-        dismiss_on_move = true, -- Dismiss the floating window when moving the cursor.
-        force_close = true, -- passed into vim.api.nvim_win_close's second argument. See :h nvim_win_close
-        bufhidden = "wipe", -- the bufhidden option to set on the floating window. See :h bufhidden
-        stack_floating_preview_windows = false, -- Whether to nest floating windows
+        focus_on_open = false,                     -- Focus the floating window when opening it.
+        dismiss_on_move = true,                    -- Dismiss the floating window when moving the cursor.
+        force_close = true,                        -- passed into vim.api.nvim_win_close's second argument. See :h nvim_win_close
+        bufhidden = "wipe",                        -- the bufhidden option to set on the floating window. See :h bufhidden
+        stack_floating_preview_windows = false,    -- Whether to nest floating windows
         preview_window_title = { enable = false }, -- Whether to set
       }
     end,
   },
+  -- DAP,
+  { "mfussenegger/nvim-dap" },
+  { "rcarriga/nvim-dap-ui" },
+  { "ravenxrz/DAPInstall.nvim" },
 }
--- DAP,
--- { "mfussenegger/nvim-dap" },
--- { "rcarriga/nvim-dap-ui" },
--- { "ravenxrz/DAPInstall.nvim" },

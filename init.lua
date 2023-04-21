@@ -18,7 +18,6 @@ safe_require "user.cmp"
 
 safe_require "user.treesitter"
 safe_require "user.autopairs"
-safe_require "user.nvim-tree"
 
 safe_require "user.toggleterm"
 
