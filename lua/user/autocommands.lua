@@ -5,6 +5,15 @@
 --   end,
 -- })
 
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LazyInstall",
+  once = true,
+  callback = function()
+    vim.cmd("helptags ALL")
+    vim.notify("Regenerated helptags!")
+  end,
+})
+
 vim.api.nvim_create_user_command("FindFiles", function()
   require("telescope.builtin").find_files { cwd = vim.loop.cwd() }
 end, {})
@@ -33,6 +42,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.keymap.set("n", "q", "<cmd>cclose<CR>", { noremap = true, silent = true, buffer = true })
   end,
 })
+
 
 -- help window in new split
 vim.api.nvim_create_autocmd({ "FileType" }, {

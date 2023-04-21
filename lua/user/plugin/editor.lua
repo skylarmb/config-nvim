@@ -1,4 +1,33 @@
+---------- Editor ----------
 return {
+  -- quote/bracket and surround motions
+  { "tpope/vim-surround", event = "VeryLazy" },
+  -- Autopairs, integrates with both cmp and treesitter
+  { "windwp/nvim-autopairs", event = "VeryLazy" },
+  { "JoosepAlviste/nvim-ts-context-commentstring" },
+  -- respect editorconfig files
+  { "editorconfig/editorconfig-vim", event = "VeryLazy" },
+  -- nuke whitespace
+  { "ntpeters/vim-better-whitespace", event = "VeryLazy" },
+  -- sorting as a motion
+  { "christoomey/vim-sort-motion", event = "VeryLazy" },
+  -- Distraction-free editing
+  {
+    "Pocco81/true-zen.nvim",
+    cmd = "TZAtaraxis",
+    opts = {
+      integrations = {
+        twilight = true, -- enable twilight (ataraxis)
+        lualine = true, -- hide nvim-lualine (ataraxis)
+      },
+    },
+    dependencies = {
+      { "folke/twilight.nvim" },
+    },
+  },
+  -- dynamic identation guides
+  { "lukas-reineke/indent-blankline.nvim" },
+  -- treesitter-aware commenting that works with TSX
   {
     "numToStr/Comment.nvim",
     opts = {
@@ -24,6 +53,6 @@ return {
           }
         end
       end,
-    }
-  }
+    },
+  },
 }

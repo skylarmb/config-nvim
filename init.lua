@@ -1,23 +1,29 @@
-require "user.impatient"
-require "user.options"
-require "user.keymaps"
-require "user.plugins"
-require "user.autocommands"
-require "user.colorscheme"
-require "user.cmp"
-require "user.gitsigns"
+vim.g.mapleader = " "
 
-require "user.treesitter"
-require "user.autopairs"
-require "user.nvim-tree"
+local function safe_require(module)
+  local ok, err = pcall(require, module)
+  if not ok then
+    print("Error loading " .. module .. ": " .. err)
+  end
+end
 
-require "user.bufferline"
-require "user.lualine"
-require "user.toggleterm"
+local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
+vim.opt.rtp:prepend(lazypath)
 
-require "user.project"
-require "user.illuminate"
-require "user.indentline"
-require "user.lsp"
-require "user.dap"
-require "user.quickfix"
+safe_require "user.options"
+safe_require "user.keymaps"
+safe_require "user.plugins"
+safe_require "user.autocommands"
+safe_require "user.cmp"
+
+safe_require "user.treesitter"
+safe_require "user.autopairs"
+safe_require "user.nvim-tree"
+
+safe_require "user.toggleterm"
+
+safe_require "user.project"
+safe_require "user.illuminate"
+safe_require "user.indentline"
+safe_require "user.dap"
+-- safe_require "user.quickfix"

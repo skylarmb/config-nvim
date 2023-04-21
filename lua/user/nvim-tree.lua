@@ -17,7 +17,7 @@ local function nvimtree_on_attach(bufnr)
 
   api.config.mappings.default_on_attach(bufnr)
 
-  vim.api.nvim_set_hl(0, "NvimTreeEndOfBuffer", { link = "Normal" })
+  vim.api.nvim_set_hl(0, "NvimTreeEndOfBuffer", { link = "EndOfBuffer" })
   vim.api.nvim_set_hl(0, "NvimTreeNormal", { link = "Normal" })
 
   vim.keymap.set("n", ".", api.tree.change_root_to_node, opts "CD")
@@ -34,7 +34,7 @@ local function nvimtree_on_attach(bufnr)
   vim.keymap.set("n", "<CR>", api.node.open.tab, opts "Open")
   vim.keymap.set("n", "o", api.node.run.system, opts "Run System")
   vim.keymap.set("n", "?", api.tree.toggle_help, opts "Help")
-  vim.keymap.set("n", "q", "", opts "Noop")
+  vim.keymap.set("n", "q", "close", opts "Noop")
   vim.keymap.set("n", "qq", "close", opts "Close")
 end
 
@@ -46,27 +46,16 @@ nvim_tree.setup {
   renderer = {
     root_folder_modifier = ":t",
     icons = {
+      git_placement = "after",
       glyphs = {
-        default = "",
-        symlink = "",
-        folder = {
-          arrow_open = "",
-          arrow_closed = "",
-          default = "",
-          open = "",
-          empty = "",
-          empty_open = "",
-          symlink = "",
-          symlink_open = "",
-        },
         git = {
-          unstaged = "",
-          staged = "S",
-          unmerged = "",
-          renamed = "➜",
-          untracked = "U",
+          unstaged = "",
+          staged = "",
+          unmerged = "",
+          renamed = "",
+          untracked = "",
           deleted = "",
-          ignored = "◌",
+          ignored = "⊠",
         },
       },
     },
@@ -75,13 +64,16 @@ nvim_tree.setup {
     enable = true,
     show_on_dirs = true,
     icons = {
-      hint = "",
-      info = "",
-      warning = "",
-      error = "",
+      error = "",
+      warning = "",
+      hint = "",
+      info = "",
+    },
+    severity = {
+      min = vim.diagnostic.severity.WARN,
     },
   },
-  update_cwd = true,
+  update_cwd = false,
   view = {
     width = 30,
   },

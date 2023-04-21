@@ -1,84 +1,74 @@
--- Shorten function name
-local keymap = vim.keymap.set
--- Silent keymap option
-local opts = { silent = true, noremap = true }
+local default_opts = { silent = true, noremap = true }
 local remap_opts = { silent = true, remap = true }
 
---Remap space as leader key
-keymap("", "<Space>", "<Nop>", opts)
-vim.g.mapleader = " "
-
--- Modes
---   normal_mode = "n",
---   insert_mode = "i",
---   visual_mode = "v",
---   visual_block_mode = "x",
---   term_mode = "t",
---   command_mode = "c",
+local function keymap(m, k, c, o)
+  local opts = o or default_opts
+  vim.keymap.set(m, k, c, opts)
+end
 
 -- Config --
 
-keymap("n", "<S-l>", ":bnext<CR>", opts)
+keymap("n", "<S-l>", ":bnext<CR>")
 -- Navigate buffers
-keymap("n", "<S-h>", ":bprevious<CR>", opts)
+keymap("n", "<S-h>", ":bprevious<CR>")
 
 -- Clear highlights
-keymap("n", "<leader><leader>", "<cmd>nohlsearch<CR>", opts)
+keymap("n", "<leader><leader>", "<cmd>nohlsearch<CR>")
 
 -- Better paste
-keymap("v", "p", '"_dP', opts)
+keymap("v", "p", '"_dP')
 
 -- Insert --
 -- Press jk fast to enter
-keymap("i", "jk", "<ESC>", opts)
+keymap("i", "jk", "<ESC>")
 
 -- Visual --
 -- Stay in indent mode
-keymap("v", "<", "<gv", opts)
-keymap("v", ">", ">gv", opts)
+keymap("v", "<", "<gv")
+keymap("v", ">", ">gv")
 
 -- Plugins --
 
 -- NvimTree
-keymap("n", "`", ":NvimTreeFindFileToggle<CR>", opts)
+keymap("n", "`", ":NvimTreeFindFileToggle<CR>")
 
 -- Git
-keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
+keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>")
 
 -- Comment
--- keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
--- keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", opts)
+-- keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>")
+-- keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>")
 
 -- DAP
-keymap("n", "<leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", opts)
-keymap("n", "<leader>dc", "<cmd>lua require'dap'.continue()<cr>", opts)
-keymap("n", "<leader>di", "<cmd>lua require'dap'.step_into()<cr>", opts)
-keymap("n", "<leader>do", "<cmd>lua require'dap'.step_over()<cr>", opts)
-keymap("n", "<leader>dO", "<cmd>lua require'dap'.step_out()<cr>", opts)
-keymap("n", "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>", opts)
-keymap("n", "<leader>dl", "<cmd>lua require'dap'.run_last()<cr>", opts)
-keymap("n", "<leader>du", "<cmd>lua require'dapui'.toggle()<cr>", opts)
-keymap("n", "<leader>dt", "<cmd>lua require'dap'.terminate()<cr>", opts)
-keymap("n", ";", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", opts)
+keymap("n", "<leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<cr>")
+keymap("n", "<leader>dc", "<cmd>lua require'dap'.continue()<cr>")
+keymap("n", "<leader>di", "<cmd>lua require'dap'.step_into()<cr>")
+keymap("n", "<leader>do", "<cmd>lua require'dap'.step_over()<cr>")
+keymap("n", "<leader>dO", "<cmd>lua require'dap'.step_out()<cr>")
+keymap("n", "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>")
+keymap("n", "<leader>dl", "<cmd>lua require'dap'.run_last()<cr>")
+keymap("n", "<leader>du", "<cmd>lua require'dapui'.toggle()<cr>")
+keymap("n", "<leader>dt", "<cmd>lua require'dap'.terminate()<cr>")
+keymap("n", ";", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>")
 
 -- LSP
-keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
-keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-keymap("n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-keymap("n", "<leader>li", "<cmd>LspInfo<cr>", opts)
-keymap("n", "<leader>lI", "<cmd>Mason<cr>", opts)
-keymap("n", "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-keymap("n", "ge", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", opts)
-keymap("n", "gp", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", opts)
-keymap("n", "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-keymap("n", "<leader>ls", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-keymap("n", "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
-keymap("n", "rn", "<cmd>lua require('cosmic-ui').rename()<CR>", opts)
+keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
+keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
+keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
+keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
+keymap("n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>")
+keymap("n", "<leader>li", "<cmd>LspInfo<cr>")
+keymap("n", "<leader>lI", "<cmd>Mason<cr>")
+keymap("n", "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>")
+keymap("n", "ge", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>")
+keymap("n", "gp", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>")
+keymap("n", "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>")
+keymap("n", "<leader>ls", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
+keymap("n", "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<CR>")
+keymap("n", "rn", "<cmd>lua require('cosmic-ui').rename()<CR>")
 keymap("n", "ga", '<cmd>lua require("cosmic-ui").code_actions()<cr>')
-keymap("v", "ga", '<cmd>lua require("cosmic-ui").range_code_actions()<cr>', opts)
-keymap("n", "gf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", opts)
+keymap("v", "ga", '<cmd>lua require("cosmic-ui").range_code_actions()<cr>')
+keymap("n", "gf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>")
 
 local nvx = { "n", "v", "x" }
 
@@ -106,7 +96,6 @@ keymap("n", "<bs>", "i<bs>")
 keymap("n", "t", "%")
 keymap("v", "t", "%")
 -- seamless tmux navigation
-
 keymap("n", "<C-h>", "<cmd>NvimTmuxNavigateLeft<cr>")
 keymap("n", "<C-j>", "<cmd>NvimTmuxNavigateDown<cr>")
 keymap("n", "<C-k>", "<cmd>NvimTmuxNavigateUp<cr>")
@@ -117,14 +106,10 @@ keymap("n", "<C-l>", "<cmd>NvimTmuxNavigateRight<cr>")
 -- redo with U
 keymap("n", "U", "<C-r>")
 -- close buffers
-keymap("n", "qq", "m'<cmd>close<CR>")
+keymap("n", "qq", "m'<cmd>Bdelete!<CR>")
 keymap("n", "qa", "m'<cmd>qa<CR>")
 -- ww to write from normal mode
-keymap("n", "ww", "", {
-  callback = function()
-    vim.cmd "w"
-  end,
-})
+keymap("n", "ww", "<cmd>w<cr>")
 -- yank current file name and line number
 keymap("n", "yl", ":let @*=expand('%') . ':' . line('.')<CR>")
 -- yank current file name
@@ -156,9 +141,10 @@ keymap("n", "<leader>W", ":StripWhitespace<CR>")
 
 ------------ Search ------------
 keymap("n", "<C-p>", "<cmd>Telescope find_files<cr>")
-keymap("n", "<C-b>", ":Telescope buffers<CR>", opts)
+keymap("n", "<C-b>", ":Telescope buffers<CR>")
 keymap("n", "<leader>w", ":Telescope workspaces<cr>")
 keymap("n", "<c-f>", "<cmd>Telescope live_grep<CR>")
+keymap("n", "<leader>th", "<cmd>Telescope highlights<CR>")
 
 -- buffer search word under cursor
 keymap("n", "f", "*N")
@@ -172,7 +158,7 @@ keymap("n", "<leader>hw", ":help <C-R>=expand('<cword>')<CR><CR>")
 keymap("n", "<leader>hh", ":help <C-R>=expand('<cexpr>')<CR><CR>")
 keymap("n", "<leader>h", ":help ", { silent = false })
 -- replay notifications on to quickfix list
-keymap("n", "<leader>m", ":NotifierReplay!<CR>", { noremap = true, silent = true })
+keymap("n", "<leader>m", ":NotifierReplay<CR>")
 
 ------------ Tabs and Splits ------------
 -- new vertical split
@@ -209,11 +195,12 @@ keymap("n", "<leader>gd", ":Gdiff<CR>")
 -- open Trouble quickfix window
 -- keymap("n", "<leader>t", "<cmd>TroubleToggle workspace_diagnostics<CR>")
 -- if vim.g.neovide then
-vim.g.neovide_input_use_logo = 1 -- enable use of the logo (cmd) key
-vim.keymap.set("n", "<D-s>", ":w<CR>") -- Save
-vim.keymap.set("v", "<D-c>", '"+y') -- Copy
-vim.keymap.set("n", "<D-v>", '"+P') -- Paste normal mode
-vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
-vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
-vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert modeend
+keymap("n", "<D-s>", ":w<CR>")      -- Save
+keymap("v", "<D-c>", '"+y')         -- Copy
+keymap("n", "<D-v>", '"+P')         -- Paste normal mode
+keymap("v", "<D-v>", '"+P')         -- Paste visual mode
+keymap("c", "<D-v>", "<C-R>+")      -- Paste command mode
+keymap("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert modeend
 -- end
+
+keymap("n", "<C-t>", "<cmd>ToggleTerm<cr>")

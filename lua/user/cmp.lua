@@ -1,12 +1,9 @@
-local cmp_status_ok, cmp = pcall(require, "cmp")
-if not cmp_status_ok then
-  return
-end
-
 local snip_status_ok, luasnip = pcall(require, "luasnip")
 if not snip_status_ok then
   return
 end
+local cmp = require "cmp"
+local cmp_action = require("lsp-zero").cmp_action()
 
 require("luasnip/loaders/from_vscode").lazy_load()
 
@@ -68,28 +65,21 @@ cmp.setup {
       i = cmp.mapping.abort(),
       c = cmp.mapping.close(),
     },
-    -- Accept currently selected item. If none selected, `select` first item.
-    -- Set `select` to `false` to only confirm explicitly selected items.
-    ["<CR>"] = cmp.mapping.confirm { select = true },
-    ["<Tab>"] = vim.schedule_wrap(function(fallback)
+    ["<Tab>"] = cmp_action.luasnip_supertab {
+      behavior = cmp.ConfirmBehavior.Replace, -- important for copilot
+      select = true,
+    },
+    ["<S-Tab>"] = cmp_action.luasnip_shift_supertab {
+      behavior = cmp.ConfirmBehavior.Replace, -- important for copilot
+      select = true,
+    },
+    ["<C-y>"] = vim.schedule_wrap(function(fallback)
       if cmp.visible() and has_words_before() then
         cmp.select_next_item { behavior = cmp.SelectBehavior.Select }
       else
         fallback()
       end
     end),
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, {
-      "i",
-      "s",
-    }),
   },
   formatting = {
     fields = { "kind", "abbr", "menu" },

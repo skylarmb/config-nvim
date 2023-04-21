@@ -1,12 +1,13 @@
 return {
-  {
-    "nvim-telescope/telescope-fzf-native.nvim",
-  },
+  -- {
+  --   "nvim-telescope/telescope-fzf-native.nvim",
+  -- },
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
       "nvim-telescope/telescope-fzf-native.nvim",
       "natecraddock/workspaces.nvim",
+      "stevearc/dressing.nvim",
     },
     config = function()
       local telescope = require "telescope"
@@ -53,6 +54,7 @@ return {
   },
   {
     "natecraddock/workspaces.nvim",
+    cmd = { "Workspaces", "WorkspacesOpen" },
     opts = {
       hooks = {
         open = function()
@@ -63,4 +65,6 @@ return {
       },
     },
   },
+  -- fast searching with ag
+  { "rking/ag.vim", event = "VeryLazy" },
 }

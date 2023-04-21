@@ -1,7 +1,8 @@
 HOME = os.getenv "HOME"
+vim.fn.setenv("TERM", "alacritty")
 
 -- vim.cmd "hi NonText cterm=NONE ctermfg=NONE"
-
+vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 vim.opt.backup = false -- creates a backup file
 vim.opt.clipboard = "unnamedplus" -- allows neovim to access the system clipboard
 vim.opt.cmdheight = 1 -- more space in the neovim command line for displaying messages
@@ -32,8 +33,8 @@ vim.opt.cursorline = true -- highlight the current line
 vim.opt.number = true -- set numbered lines
 vim.opt.laststatus = 3 -- only the last window will always have a status line
 vim.opt.showcmd = false -- hide (partial) command in the last line of the screen (for performance)
-vim.opt.numberwidth = 4 -- minimal number of columns to use for the line number {default 4}
-vim.opt.signcolumn = "yes" -- always show the sign column, otherwise it would shift the text each time
+vim.opt.numberwidth = 1 -- minimal number of columns to use for the line number {default 4}
+vim.opt.signcolumn = "yes:1" -- always show the sign column, otherwise it would shift the text each time
 -- vim.opt.wrap = false                            -- display lines as one long line
 -- vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
 -- vim.opt.sidescrolloff = 8                       -- minimal number of screen columns to keep to the left and right of the cursor if wrap is `false`
@@ -110,16 +111,14 @@ vim.opt.dictionary = "/usr/share/dict/words"
 -- ag
 vim.g.ag_working_path_mode = "r"
 
-if vim.g.neovide then
-  vim.opt.guifont = "RobotoMono Nerd Font Mono:h14" -- the font used in graphical neovim applications
-  vim.opt.guicursor:append "a:blinkon0"
-  vim.opt.linespace = 0
-  vim.g.neovide_scroll_animation_length = 0.04
-  vim.g.neovide_hide_mouse_when_typing = true
-  vim.g.neovide_refresh_rate = 120
-  vim.g.neovide_cursor_trail_size = 0.1
-  vim.g.neovide_cursor_vfx_mode = ""
-  vim.g.neovide_input_use_logo = 1
-  vim.g.neovide_cursor_animate_command_line = false
-  vim.g.neovide_scale_factor = 1.2
-end
+vim.opt.guifont = "RobotoMono Nerd Font Mono:h14" -- the font used in graphical neovim applications
+vim.opt.guicursor:append "a:blinkon0"
+vim.opt.linespace = 0
+vim.g.neovide_scroll_animation_length = 0.04
+vim.g.neovide_hide_mouse_when_typing = true
+vim.g.neovide_refresh_rate = 120
+vim.g.neovide_cursor_trail_size = 0.1
+vim.g.neovide_cursor_vfx_mode = ""
+vim.g.neovide_input_use_logo = 1
+vim.g.neovide_cursor_animate_command_line = false
+vim.g.neovide_scale_factor = 1.2
