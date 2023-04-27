@@ -8,10 +8,15 @@ return {
   {
     "sainnhe/gruvbox-material",
     config = function()
+      vim.cmd [[
+        colorscheme gruvbox-material
+        highlight Cursor gui=NONE guifg=bg guibg=fg
+        hi CursorLine cterm=NONE ctermbg=black
+        hi NonText cterm=NONE ctermfg=NONE
+      ]]
       vim.g.gruvbox_material_foreground = "mixed"
       vim.g.gruvbox_material_background = "medium"
       vim.g.gruvbox_material_better_performance = 1
-      vim.cmd "colorscheme gruvbox-material"
       vim.api.nvim_set_hl(0, "FloatBorder", { link = "Grey" })
       -- yellow search instead of default puke green
       vim.api.nvim_set_hl(0, "Search", { link = "TSWarning" })
@@ -31,6 +36,7 @@ return {
       vim.api.nvim_set_hl(0, "SidebarNvimLspDiagnosticsWarning", { link = "DiagnosticSignWarn" })
       vim.api.nvim_set_hl(0, "SidebarNvimLspDiagnosticsInfo", { link = "DiagnosticSignWarn" })
       vim.api.nvim_set_hl(0, "SidebarNvimLspDiagnosticsHint", { link = "DiagnosticSignHint" })
+      vim.api.nvim_set_hl(0, "ExtraWhitespace", { link = "SpellBad" })
     end,
   },
   -- show hex colors

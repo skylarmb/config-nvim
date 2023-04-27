@@ -9,6 +9,8 @@ vim.opt.cmdheight = 1 -- more space in the neovim command line for displaying me
 vim.opt.completeopt = { "menuone", "noselect", "preview" } -- mostly just for cmp
 vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
 vim.opt.history = 9001 -- its over 9000!
+vim.opt.scrolloff = 10 -- keep 10 lines below/above cursor
+vim.opt.mousescroll = "ver:1,hor:1"
 vim.opt.fileencoding = "utf-8" -- the encoding written to a file
 vim.opt.hlsearch = true -- highlight all matches on previous search pattern
 vim.opt.ignorecase = true -- ignore case in search patterns
@@ -38,9 +40,6 @@ vim.opt.signcolumn = "yes:1" -- always show the sign column, otherwise it would 
 -- vim.opt.wrap = false                            -- display lines as one long line
 -- vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
 -- vim.opt.sidescrolloff = 8                       -- minimal number of screen columns to keep to the left and right of the cursor if wrap is `false`
--- vim.cmd "highlight Cursor gui=NONE guifg=bg guibg=fg"
--- vim.cmd "hi CursorLine cterm=NONE ctermbg=black"
--- vim.cmd "hi NonText cterm=NONE ctermfg=NONE"
 vim.opt.fillchars.eob = " " -- show empty lines at the end of a buffer as ` ` {default `~`}
 vim.opt.shortmess:append "c" -- hide all the completion messages, e.g. "-- XXX completion (YYY)", "match 1 of 2", "The only match", "Pattern not found"
 vim.opt.whichwrap:append "<,>,[,],h,l" -- keys allowed to move to the previous/next line when the beginning/end of line is reached

@@ -88,8 +88,10 @@ keymap(nvx, "e", "w", remap_opts)
 -- exit insert mode with jj/jk
 keymap("i", "jj", "<ESC>l")
 keymap("i", "jk", "<ESC>l")
--- jj for term mode
+-- exit insert for term mode
 keymap("t", "jj", "<C-\\><C-n>")
+keymap("t", "jk", "<C-\\><C-n>")
+keymap("t", "<ESC>", "<C-\\><C-n>")
 -- enter insert mode when pressing backspace from normal mode
 keymap("n", "<bs>", "i<bs>")
 -- bounce between brackets
@@ -115,9 +117,9 @@ keymap("n", "yl", ":let @*=expand('%') . ':' . line('.')<CR>")
 -- yank current file name
 keymap("n", "yn", ":let @*=expand('%')<CR>")
 -- show current yank rink
-keymap("n", "<C-y>", ":YRShow<CR>")
+-- keymap("n", "<C-y>", ":YRShow<CR>")
 -- dupe line
-keymap("n", "<C-d>", "yyp")
+-- keymap("n", "<C-d>", "yyp")
 -- join visual selection
 keymap("x", "<leader>j", ":join<CR>")
 -- browse source of current file
@@ -126,6 +128,7 @@ keymap(
   "<leader>cs",
   [[:silent !/bin/zsh -i -c 'browsesource "$(basename `git rev-parse --show-toplevel`)" %'<CR>]]
 )
+
 -- move lines up and down
 keymap("n", "<c-n>", ":m +1<CR>")
 keymap("n", "<c-m>", ":m -2<CR>")
@@ -171,8 +174,6 @@ keymap("n", "<leader>.", "<c-w>10<<CR>")
 
 ------------ File browsing ------------
 keymap("n", "<leader>n", ":n<CR>")
--- expand %% to current dir name
-keymap("c", "%%", "<C-R>=expand('%:h').'/'<CR>")
 -- change vim working dir to current buffer dir
 keymap("n", "<leader>cdf", ":cd %:h<CR>")
 -- change vim working dir to current buffer parent dir
@@ -195,14 +196,23 @@ keymap("n", "<leader>gd", ":Gdiff<CR>")
 
 ------------ Misc ------------
 -- open Trouble quickfix window
--- keymap("n", "<leader>t", "<cmd>TroubleToggle workspace_diagnostics<CR>")
--- if vim.g.neovide then
+keymap("n", "<leader>t", "<cmd>TroubleToggle workspace_diagnostics<CR>")
 keymap("n", "<D-s>", ":w<CR>") -- Save
 keymap("v", "<D-c>", '"+y') -- Copy
 keymap("n", "<D-v>", '"+P') -- Paste normal mode
 keymap("v", "<D-v>", '"+P') -- Paste visual mode
-keymap("c", "<D-v>", "<C-R>+") -- Paste command mode
 keymap("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert modeend
--- end
+keymap("n", "<leader>tt", "<cmd>ToDoTxtTasksToggle<CR>") -- TODO list
+keymap("n", "<leader>tn", "<cmd>ToDoTxtCapture<CR>") -- TODO list
 
-keymap("n", "<C-t>", "<cmd>ToggleTerm<cr>")
+------------ Command & Term mode ------------
+-- expand %% to current dir name
+keymap("c", "%%", "<C-R>=expand('%:h').'/'<CR>")
+-- GUI vim client paste command mode
+keymap("c", "<D-v>", "<C-R>+")
+-- disable annoying default bind
+keymap("c", "<C-f>", "")
+-- get me out of here!
+keymap("c", "<ESC>", "<C-c>")
+-- open floating term
+keymap("n", "<C-t>", "<cmd>ToggleTerm<cr><insert>")

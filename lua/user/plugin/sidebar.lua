@@ -6,15 +6,19 @@ return {
       { "sidebar-nvim/sections-dap" },
     },
     config = function()
-      require("sidebar-nvim").setup({
+      require("sidebar-nvim").setup {
         open = false,
         bindings = {
-          ["q"] = function() require("sidebar-nvim").close() end,
-          ["r"] = function() require("sidebar-nvim").update() end,
+          ["q"] = function()
+            require("sidebar-nvim").close()
+          end,
+          ["r"] = function()
+            require("sidebar-nvim").update()
+          end,
         },
         todos = {
           icon = "",
-          ignored_paths = { "~" },  -- ignore certain paths, this will prevent huge folders like $HOME to hog Neovim with TODO searching
+          ignored_paths = { "~" }, -- ignore certain paths, this will prevent huge folders like $HOME to hog Neovim with TODO searching
           initially_closed = false, -- whether the groups should be initially closed on start. You can manually open/close groups later.
         },
         symbols = {
@@ -28,29 +32,29 @@ return {
         sections = {
           "todos",
           "diagnostics",
-          require("dap-sidebar-nvim.breakpoints"),
+          require "dap-sidebar-nvim.breakpoints",
           "symbols",
         },
         dap = {
           breakpoints = {
-            icon = "🔍"
-          }
+            icon = "🔍",
+          },
         },
         section_separator = {
           "",
           "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯",
-          ""
+          "",
         },
         section_title_separator = { "" },
-      })
-    end
+      }
+    end,
   },
   {
     "kyazdani42/nvim-tree.lua",
     opts = {
       update_focused_file = {
-        enable = false,
-        update_cwd = false,
+        enable = true,
+        update_root = false,
       },
       renderer = {
         root_folder_modifier = ":t",

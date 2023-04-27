@@ -7,7 +7,7 @@ return {
   -- repl / debugger
   { "tpope/vim-scriptease", event = "VeryLazy", ft = { "lua", "viml" } }, -- lua/viml repl / debugger
   -- Bdelete!
-  { "moll/vim-bbye" },
+  { "moll/vim-bbye", lazy = false },
   -- seamless jumping between tmux panes and buffers
   {
     "alexghergh/nvim-tmux-navigation",
@@ -16,9 +16,11 @@ return {
     },
   },
   { "akinsho/toggleterm.nvim", cmd = "ToggleTerm" },
+  { "AckslD/nvim-neoclip.lua", event = "VeryLazy" },
   -- Git
   {
     "lewis6991/gitsigns.nvim",
+    event = "BufRead",
     opts = {
       signs = {
         add = { hl = "GitSignsAdd", text = "▎", numhl = "GitSignsAddNr", linehl = "GitSignsAddLn" },
@@ -51,5 +53,31 @@ return {
       },
     },
   },
-  { "tpope/vim-fugitive", event = "VeryLazy" },
+  -- Git commands
+  { "tpope/vim-fugitive", event = "BufRead" },
+  -- global TODO list
+  {
+    "arnarg/todotxt.nvim",
+    cmd = { "ToDoTxtCapture", "ToDoTxtTasksToggle" },
+    -- "ToggleTermSendCurrentLine
+    -- ToggleTermSetName,
+    -- ToDoTxtTasksClose,
+    -- ToggleStripWhitespaceOnSave,
+    -- ToggleTermSendVisualLines,
+    -- ToggleTermToggleAll,
+    -- ToDoTxtTasksOpen,
+    config = function()
+      require("todotxt-nvim").setup {
+        todo_file = "~/notes/todo.txt",
+        -- Keymap used in sidebar split
+        keymap = {
+          quit = "q",
+          toggle_metadata = "m",
+          delete_task = "dd",
+          complete_task = "<space>",
+          edit_task = "ee",
+        },
+      }
+    end,
+  },
 }
