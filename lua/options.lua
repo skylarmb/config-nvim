@@ -1,8 +1,9 @@
-HOME = os.getenv "HOME"
+HOME = os.getenv("HOME")
 vim.fn.setenv("TERM", "alacritty")
 
 -- vim.cmd "hi NonText cterm=NONE ctermfg=NONE"
-vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
+vim.opt.shada = [['20,f1,<50,s10,:10,/10,@10,h]] -- default value: "!,'100,<50,s10,h"
 vim.opt.backup = false -- creates a backup file
 vim.opt.clipboard = "unnamedplus" -- allows neovim to access the system clipboard
 vim.opt.cmdheight = 1 -- more space in the neovim command line for displaying messages
@@ -10,7 +11,7 @@ vim.opt.completeopt = { "menuone", "noselect", "preview" } -- mostly just for cm
 vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
 vim.opt.history = 9001 -- its over 9000!
 vim.opt.scrolloff = 10 -- keep 10 lines below/above cursor
-vim.opt.mousescroll = "ver:1,hor:1"
+-- vim.opt.mousescroll = "ver:10,hor:1"
 vim.opt.fileencoding = "utf-8" -- the encoding written to a file
 vim.opt.hlsearch = true -- highlight all matches on previous search pattern
 vim.opt.ignorecase = true -- ignore case in search patterns
@@ -24,6 +25,7 @@ vim.opt.splitbelow = true -- force all horizontal splits to go below current win
 vim.opt.splitright = true -- force all vertical splits to go to the right of current window
 vim.opt.swapfile = false -- creates a swapfile
 vim.opt.termguicolors = true -- set term gui colors (most terminals support this)
+vim.opt.background = "dark"
 vim.opt.timeoutlen = 1000 -- time to wait for a mapped sequence to complete (in milliseconds)
 vim.opt.undofile = true -- enable persistent undo
 vim.opt.updatetime = 300 -- faster completion (4000ms default)
@@ -41,10 +43,10 @@ vim.opt.signcolumn = "yes:1" -- always show the sign column, otherwise it would 
 -- vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
 -- vim.opt.sidescrolloff = 8                       -- minimal number of screen columns to keep to the left and right of the cursor if wrap is `false`
 vim.opt.fillchars.eob = " " -- show empty lines at the end of a buffer as ` ` {default `~`}
-vim.opt.shortmess:append "c" -- hide all the completion messages, e.g. "-- XXX completion (YYY)", "match 1 of 2", "The only match", "Pattern not found"
-vim.opt.whichwrap:append "<,>,[,],h,l" -- keys allowed to move to the previous/next line when the beginning/end of line is reached
-vim.opt.iskeyword:append "-" -- treats words with `-` as single words
-vim.opt.formatoptions:remove { "c", "r", "o" } -- This is a sequence of letters which describes how automatic formatting is to be done
+vim.opt.shortmess:append("c") -- hide all the completion messages, e.g. "-- XXX completion (YYY)", "match 1 of 2", "The only match", "Pattern not found"
+vim.opt.whichwrap:append("<,>,[,],h,l") -- keys allowed to move to the previous/next line when the beginning/end of line is reached
+vim.opt.iskeyword:append("-") -- treats words with `-` as single words
+vim.opt.formatoptions:remove({ "c", "r", "o" }) -- This is a sequence of letters which describes how automatic formatting is to be done
 vim.opt.linebreak = true
 -- show window title
 vim.opt.title = true
@@ -61,13 +63,15 @@ vim.opt.title = true
 
 -- files to ignore
 vim.opt.wildmode = "list:longest,list:full"
-vim.opt.wildignore:append "*.o,*.obj,*.rbc,*.class,vendor/gems/*,*.pb.go"
-vim.opt.wildignore:append ",*.jpg,*.jpeg,*.gif,*.png,*.xpm,*.webp"
-vim.opt.wildignore:append ",*.zip,*.apk,*.gz,.DS_Store"
-vim.opt.wildignore:append ",.svn,CVS,.git,.hg"
-vim.opt.wildignore:append ",node_modules,deps,build,bin,tmp"
-vim.opt.wildignore:append ",.cache,.pnpm,.idea,.vscode,.terraform,__pycache__"
-vim.opt.wildignore:append "deps,.svn,CVS,.git,.hg,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,.DS_Store,*.aux,*.out,*.toc"
+vim.opt.wildignore:append("*.o,*.obj,*.rbc,*.class,vendor/gems/*,*.pb.go")
+vim.opt.wildignore:append(",*.jpg,*.jpeg,*.gif,*.png,*.xpm,*.webp")
+vim.opt.wildignore:append(",*.zip,*.apk,*.gz,.DS_Store")
+vim.opt.wildignore:append(",.svn,CVS,.git,.hg")
+vim.opt.wildignore:append(",node_modules,deps,build,bin,tmp")
+vim.opt.wildignore:append(",.cache,.pnpm,.idea,.vscode,.terraform,__pycache__")
+vim.opt.wildignore:append(
+  "deps,.svn,CVS,.git,.hg,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,.DS_Store,*.aux,*.out,*.toc"
+)
 -- on TAB, complete options for system command
 vim.opt.wildmenu = true
 
@@ -111,7 +115,7 @@ vim.opt.dictionary = "/usr/share/dict/words"
 vim.g.ag_working_path_mode = "r"
 
 vim.opt.guifont = "RobotoMono Nerd Font Mono:h14" -- the font used in graphical neovim applications
-vim.opt.guicursor:append "a:blinkon0"
+vim.opt.guicursor:append("a:blinkon0")
 vim.opt.linespace = 0
 vim.g.neovide_scroll_animation_length = 0.04
 vim.g.neovide_hide_mouse_when_typing = true

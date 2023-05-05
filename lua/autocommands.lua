@@ -5,6 +5,27 @@
 --   end,
 -- })
 
+-- template
+-- vim.api.nvim_create_autocmd({ "FileType" }, {
+--   pattern = { "foo" },
+--   callback = function()
+--   end,
+-- })
+
+-- special syntax handling
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  pattern = { "*.Jenkinsfile", "Jenkinsfile" },
+  callback = function()
+    vim.cmd("set ft=groovy")
+  end,
+})
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  pattern = { "Dockerfile.handlebars", "*.Dockerfile.handlebars" },
+  callback = function()
+    vim.cmd("set ft=dockerfile")
+  end,
+})
+
 vim.api.nvim_create_autocmd("User", {
   pattern = "LazyInstall",
   once = true,
@@ -14,31 +35,47 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 
+-- autocmd InsertLeave * execute 'normal! mI'
+vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+  callback = function()
+    vim.cmd("normal! mI")
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "QuitPre" }, {
+  callback = function()
+    require("project_nvim.utils.history").write_projects_to_history()
+  end,
+})
+
 vim.api.nvim_create_user_command("FindFiles", function()
-  require("telescope.builtin").find_files { cwd = vim.loop.cwd() }
+  require("telescope.builtin").find_files({ cwd = vim.loop.cwd() })
 end, {})
 
-vim.api.nvim_create_autocmd({ "FileType" }, {
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = { "qf", "help", "man", "lspinfo", "spectre_panel", "veil", "NvimTree" },
   callback = function()
-    vim.cmd "setlocal nonumber colorcolumn="
-    vim.cmd "set nobuflisted"
+    vim.cmd([[
+      setlocal nonumber colorcolumn=""
+      set nobuflisted
+      set bufhidden=wipe
+    ]])
     vim.keymap.set("n", "qq", "<cmd>cclose<CR>", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set("n", "q", "<cmd>cclose<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("n", "q", "", { noremap = true, silent = true, buffer = true })
   end,
 })
 
 vim.api.nvim_create_autocmd({ "VimEnter" }, {
   callback = function()
-    vim.cmd "silent! cd %:p:h"
+    vim.cmd("silent! cd %:p:h")
   end,
 })
 
 -- help window in new split
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = "help",
+  pattern = { "help", "man" },
   callback = function()
-    vim.cmd "wincmd L"
+    vim.cmd("wincmd L")
     vim.keymap.set("n", "q", "<cmd>close<CR>", { noremap = true, silent = true, buffer = true })
   end,
 })
@@ -56,20 +93,20 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 
 vim.api.nvim_create_autocmd({ "VimResized" }, {
   callback = function()
-    vim.cmd "tabdo wincmd ="
+    vim.cmd("tabdo wincmd =")
   end,
 })
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   callback = function()
-    vim.highlight.on_yank { higroup = "Visual", timeout = 200 }
+    vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
   end,
 })
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*" },
   callback = function()
-    vim.cmd "StripWhitespace"
+    vim.cmd("StripWhitespace")
   end,
 })
 
@@ -82,7 +119,7 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 
 vim.api.nvim_create_autocmd({ "VimEnter" }, {
   callback = function()
-    vim.cmd "hi link illuminatedWord LspReferenceText"
+    vim.cmd("hi link illuminatedWord LspReferenceText")
   end,
 })
 
@@ -90,7 +127,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
   callback = function()
     local line_count = vim.api.nvim_buf_line_count(0)
     if line_count >= 5000 then
-      vim.cmd "IlluminatePauseBuf"
+      vim.cmd("IlluminatePauseBuf")
     end
   end,
 })
@@ -103,7 +140,7 @@ local persistbuffer = function(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
   vim.fn.setbufvar(bufnr, "bufpersist", 1)
 end
-vim.api.nvim_create_autocmd({ "BufRead" }, {
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
   group = id,
   pattern = { "*" },
   callback = function()

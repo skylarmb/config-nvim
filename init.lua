@@ -1,5 +1,3 @@
-vim.g.mapleader = " "
-
 local function safe_require(module)
   local ok, err = pcall(require, module)
   if not ok then
@@ -7,22 +5,63 @@ local function safe_require(module)
   end
 end
 
-local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
+-- set leader before config / plugins
+vim.g.mapleader = " "
+safe_require("options")
+
+-- lazy load plugins
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
 vim.opt.rtp:prepend(lazypath)
 
-safe_require "user.options"
-safe_require "user.keymaps"
-safe_require "user.plugins"
-safe_require "user.autocommands"
-safe_require "user.cmp"
+require("lazy").setup({
+  { "folke/lazy.nvim" }, -- lazy.nvim can manage itself
+  { import = "plugins" },
+}, {
+  defaults = {
+    lazy = false,
+    version = false, -- always use the latest git commit
+  },
+  dev = {
+    path = "~/nvim_dev",
+    patterns = { "local" },
+  },
+  install = { colorscheme = { "gruvbox-material" } },
+  checker = {
+    enabled = true,
+    concurrency = 1, -- set to 1 to check for updates very slowly
+    notify = true, -- get a notification when new updates are found
+    frequency = 60 * 60 * 24, -- check for updates once a day
+  },
+  change_detection = {
+    enabled = true,
+    notify = false, -- dont notify when config files change
+  },
+  performance = {
+    rtp = {
+      -- disable some rtp plugins that I don't use
+      disabled_plugins = {
+        "gzip",
+        "matchit",
+        "matchparen",
+        "netrwPlugin",
+        "tarPlugin",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+      },
+    },
+  },
+})
 
-safe_require "user.treesitter"
-safe_require "user.autopairs"
-
-safe_require "user.toggleterm"
-
-safe_require "user.project"
-safe_require "user.illuminate"
-safe_require "user.indentline"
-safe_require "user.dap"
--- safe_require "user.quickfix"
+safe_require("keymaps")
+safe_require("autocommands")

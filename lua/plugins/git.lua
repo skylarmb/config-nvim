@@ -1,23 +1,7 @@
 return {
-  -- session management
-  {
-    "rmagatti/auto-session",
-    cmd = { "SaveSession", "DeleteSession", "RestoreSession" },
-  }, -- session management
-  -- repl / debugger
-  { "tpope/vim-scriptease", event = "VeryLazy", ft = { "lua", "viml" } }, -- lua/viml repl / debugger
-  -- Bdelete!
-  { "moll/vim-bbye", lazy = false },
-  -- seamless jumping between tmux panes and buffers
-  {
-    "alexghergh/nvim-tmux-navigation",
-    opts = {
-      disable_when_zoomed = true, -- defaults to false
-    },
-  },
-  { "akinsho/toggleterm.nvim", cmd = "ToggleTerm" },
-  { "AckslD/nvim-neoclip.lua", event = "VeryLazy" },
-  -- Git
+  -- :Git commands
+  { "tpope/vim-fugitive", event = "BufRead" },
+  -- Git gutter signs
   {
     "lewis6991/gitsigns.nvim",
     event = "BufRead",
@@ -53,31 +37,9 @@ return {
       },
     },
   },
-  -- Git commands
-  { "tpope/vim-fugitive", event = "BufRead" },
-  -- global TODO list
+  -- Nice 3 way merging
   {
-    "arnarg/todotxt.nvim",
-    cmd = { "ToDoTxtCapture", "ToDoTxtTasksToggle" },
-    -- "ToggleTermSendCurrentLine
-    -- ToggleTermSetName,
-    -- ToDoTxtTasksClose,
-    -- ToggleStripWhitespaceOnSave,
-    -- ToggleTermSendVisualLines,
-    -- ToggleTermToggleAll,
-    -- ToDoTxtTasksOpen,
-    config = function()
-      require("todotxt-nvim").setup {
-        todo_file = "~/notes/todo.txt",
-        -- Keymap used in sidebar split
-        keymap = {
-          quit = "q",
-          toggle_metadata = "m",
-          delete_task = "dd",
-          complete_task = "<space>",
-          edit_task = "ee",
-        },
-      }
-    end,
+    "samoshkin/vim-mergetool",
+    cmd = { "MergeToolStart", "MergetoolToggle" },
   },
 }

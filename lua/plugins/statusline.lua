@@ -14,7 +14,8 @@ local diagnostics = {
 local diff = {
   "diff",
   colored = false,
-  symbols = { added = " ", modified = " ", removed = " " }, -- changes diff symbols
+  -- symbols = { added = " ", modified = " ", removed = " " }, -- changes diff symbols
+  symbols = { added = "+ ", modified = "~ ", removed = "- " }, -- changes diff symbols
   cond = hide_in_width,
 }
 
@@ -38,9 +39,10 @@ return {
         icons_enabled = true,
         globalstatus = true,
         component_separators = "",
-        section_separators = { left = "", right = "" },
-        disabled_filetypes = { "alpha", "dashboard" },
+        section_separators = { left = "", right = " " },
+        disabled_filetypes = { "alpha", "dashboard", "NvimTree" },
         always_divide_middle = true,
+        fmt = string.lower,
       },
       sections = {
         lualine_a = { "mode" },
@@ -49,6 +51,9 @@ return {
           diff,
           {
             "filename",
+            fmt = function(str)
+              return str
+            end,
             file_status = true, -- Displays file status (readonly status, modified status)
             newfile_status = false, -- Display new file status (new file means no write after created)
             path = 4, -- 4: Filename and parent dir

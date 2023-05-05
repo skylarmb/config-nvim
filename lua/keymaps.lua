@@ -1,10 +1,11 @@
-local default_opts = { silent = true, noremap = true }
+local default_opts = { silent = true, remap = false }
 local remap_opts = { silent = true, remap = true }
 
 local function keymap(m, k, c, o)
   local opts = o or default_opts
   vim.keymap.set(m, k, c, opts)
 end
+local nvx = { "n", "v", "x" }
 
 -- Config --
 
@@ -31,9 +32,6 @@ keymap("v", ">", ">gv")
 
 -- NvimTree
 keymap("n", "`", ":NvimTreeFindFileToggle<CR>")
-
--- Git
-keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>")
 
 -- Comment
 -- keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>")
@@ -68,17 +66,15 @@ keymap("n", "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<CR>")
 keymap("n", "rn", "<cmd>lua require('cosmic-ui').rename()<CR>")
 keymap("n", "ga", '<cmd>lua require("cosmic-ui").code_actions()<cr>')
 keymap("v", "ga", '<cmd>lua require("cosmic-ui").range_code_actions()<cr>')
-keymap("n", "gf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>")
-
-local nvx = { "n", "v", "x" }
+keymap("n", "gf", "<cmd>LspZeroFormat<cr>")
 
 ------------ Movement ------------
 -- always move by display lines when wrapping
 keymap(nvx, "k", "gk", remap_opts)
 keymap(nvx, "j", "gj", remap_opts)
 -- jump 10 lines
-keymap(nvx, "K", "10k", remap_opts)
-keymap(nvx, "J", "10j", remap_opts)
+keymap(nvx, "K", "10gk", remap_opts)
+keymap(nvx, "J", "10gj", remap_opts)
 -- beginning / end of line
 keymap(nvx, "H", "^", remap_opts)
 keymap(nvx, "L", "$l", remap_opts)
@@ -109,7 +105,11 @@ keymap("n", "<C-l>", "<cmd>NvimTmuxNavigateRight<cr>")
 keymap("n", "U", "<C-r>")
 -- close buffers
 keymap("n", "qq", "m'<cmd>close<CR>")
-keymap("n", "qa", "m'<cmd>qa<CR>")
+keymap("n", "qd", "m'<cmd>Bdelete!<CR>")
+keymap("n", "qa", "m'<cmd>wqa<CR>")
+-- rebind macro recording to not conflict with qq
+keymap("n", "q", "")
+keymap("n", "<leader>q", "q")
 -- ww to write from normal mode
 keymap("n", "ww", "<cmd>w<cr>")
 -- yank current file name and line number
@@ -117,9 +117,11 @@ keymap("n", "yl", ":let @*=expand('%') . ':' . line('.')<CR>")
 -- yank current file name
 keymap("n", "yn", ":let @*=expand('%')<CR>")
 -- show current yank rink
--- keymap("n", "<C-y>", ":YRShow<CR>")
+keymap("n", "<C-y>", ":YRShow<CR>")
 -- dupe line
--- keymap("n", "<C-d>", "yyp")
+keymap(nvx, "<C-d>", "yyp")
+keymap(nvx, "0", '"0y')
+keymap(nvx, ")", '"0p')
 -- join visual selection
 keymap("x", "<leader>j", ":join<CR>")
 -- browse source of current file
@@ -148,9 +150,19 @@ keymap("n", "<C-b>", ":Telescope buffers<CR>")
 keymap("n", "<leader>w", ":Telescope workspaces<cr>")
 keymap("n", "<c-f>", "<cmd>Telescope live_grep<CR>")
 keymap("n", "<leader>th", "<cmd>Telescope highlights<CR>")
+keymap("n", "<leader>o", "<cmd>Telescope jumplist<CR>")
+keymap("n", "<leader>m", "<cmd>Telescope marks<CR>")
+-- jump back to last insert location. `I` mark is set in autocmds.lua
+keymap("n", "<leader>i", "'I")
+-- recently edited files
+keymap("n", "<leader>z", "<cmd>Telescope oldfiles<cr>")
+-- jump to project roots via detection of package.json, .git, etc
+keymap("n", "<leader>p", "<cmd>Telescope projects<cr>")
 
 -- buffer search word under cursor
 keymap("n", "f", "*N")
+-- avoid recursive matching for repeated actions
+keymap("n", ".", ".n")
 -- ag word under cursor
 keymap("n", "F", "<cmd>Ag! <cword><cr>", remap_opts)
 -- global live search
@@ -161,7 +173,7 @@ keymap("n", "<leader>hw", ":help <C-R>=expand('<cword>')<CR><CR>")
 keymap("n", "<leader>hh", ":help <C-R>=expand('<cexpr>')<CR><CR>")
 keymap("n", "<leader>h", ":help ", { silent = false })
 -- replay notifications on to quickfix list
-keymap("n", "<leader>m", ":NotifierReplay<CR>")
+keymap("n", "<leader>r", ":NotifierReplay<CR>")
 
 ------------ Tabs and Splits ------------
 -- new vertical split
@@ -171,6 +183,10 @@ keymap("n", "<leader>hs", "<C-w><C-s>")
 -- resize splits by 10 columns
 keymap("n", "<leader>,", "<c-w>10><CR>")
 keymap("n", "<leader>.", "<c-w>10<<CR>")
+keymap("n", "[", "<cmd>tabprev<cr>")
+keymap("n", "]", "<cmd>tabnext<cr>")
+keymap("n", "<M-1>", "1gt<CR>")
+keymap("n", "<M-2>", "2gt")
 
 ------------ File browsing ------------
 keymap("n", "<leader>n", ":n<CR>")
@@ -178,8 +194,6 @@ keymap("n", "<leader>n", ":n<CR>")
 keymap("n", "<leader>cdf", ":cd %:h<CR>")
 -- change vim working dir to current buffer parent dir
 keymap("n", "<leader>cdu", ":cd %:p<CR>")
--- recently edited files
-keymap("n", "z", "<cmd>Telescope oldfiles<cr>")
 -- file tree
 keymap("n", "`", "<cmd>NvimTreeFindFileToggle<cr>")
 -- sidebar
@@ -189,7 +203,7 @@ keymap("n", "<leader>`", "<cmd>SidebarNvimToggle<cr>")
 -- change vim working dir to current git root
 keymap("n", "<leader>cdg", ":Gcd <CR>")
 -- git mergetool
-keymap("n", "mt", "<plug>(MergetoolToggle)")
+keymap("n", "mt", ":MergetoolToggle<CR>")
 keymap("n", "mgr", ":MergetoolDiffExchangeLeft<CR>")
 keymap("n", "mgl", ":MergetoolDiffExchangeRight<CR>")
 keymap("n", "<leader>gd", ":Gdiff<CR>")

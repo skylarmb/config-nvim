@@ -1,29 +1,31 @@
 return {
   -- UI libs used by some plugins
   { "nvim-lua/plenary.nvim" },
-  { "MunifTanjim/nui.nvim",  event = "VeryLazy" },
-  -- illuminate expression under cursor
-  { "RRethy/vim-illuminate", event = "VeryLazy" },
+  { "MunifTanjim/nui.nvim", event = "VeryLazy" },
+  { "kyazdani42/nvim-web-devicons" },
   -- nicer quickfix window
   { "kevinhwang91/nvim-bqf", event = "VeryLazy" },
   -- smooth scroll
   {
     "karb94/neoscroll.nvim",
     config = function()
-      local neoscroll = require "neoscroll"
-      neoscroll.setup {
-        mappings = { "<C-u>", "<C-d>", "<C-b>", "<C-y>", "<C-e>", "zt", "zz", "zb" },
+      local neoscroll = require("neoscroll")
+      local easing = "quadratic"
+      local duration_scalar = 10 -- duration (ms) per line scrolled
+
+      neoscroll.setup({
+        mappings = { "<C-u>", "<C-b>", "<C-y>", "<C-e>", "zt", "zz", "zb" },
         hide_cursor = true,
         cursor_scrolls_alone = true,
-        easing_function = "circular",
-        respect_scrolloff = false,
-        pre_hook = function()
+        easing_function = easing,
+        respect_scrolloff = true,
+        pre_hook = function() -- skip minianimate cursor during scrolls
           vim.g.minianimate_disable = true
         end,
-        post_hook = function()
+        post_hook = function() -- enable minianimate cursor after scrolls
           vim.g.minianimate_disable = false
         end,
-      }
+      })
       -- trigger a smooth scroll if a cursor jump would go beyond the window
       -- otherwise do normal cursor jump
       local function doscroll(lines)
@@ -32,10 +34,16 @@ return {
           local height = vim.api.nvim_win_get_height(0)
           local next = vim.fn.winline() + lines
           local scroll = true
-          if lines < 0 and not ((next - 1) <= 0) then scroll = false end
-          if lines > 0 and not ((next + 1) > height) then scroll = false end
+          -- don't scroll if we're at the top
+          if lines < 0 and not ((next - 1) <= 0) then
+            scroll = false
+          end
+          -- don't scroll if we're at the bottom
+          if lines > 0 and not ((next + 1) > height) then
+            scroll = false
+          end
           if scroll then
-            neoscroll.scroll(lines, true, 150, "circular")
+            neoscroll.scroll(lines, true, math.abs(lines) * duration_scalar, easing)
           else
             vim.cmd("norm! 10g" .. normal_key)
           end
@@ -61,11 +69,11 @@ return {
       --     return key
       --   end, { expr = true })
       -- end
-      local animate = require "mini.animate"
+      local animate = require("mini.animate")
       return {
         cursor = {
           enable = true,
-          timing = animate.gen_timing.quadratic { duration = 80, unit = "total" },
+          timing = animate.gen_timing.quadratic({ duration = 80, unit = "total" }),
         },
         resize = { enable = false },
         scroll = { enable = false }, -- neoscroll is a better scrolling plugin
@@ -80,9 +88,10 @@ return {
     "vigoux/notifier.nvim",
     opts = {
       components = { -- Order of the components to draw from top to bottom (first nvim notifications, then lsp)
-        "nvim",      -- Nvim notifications (vim.notify and such)
-        "lsp",       -- LSP status updates
+        "nvim", -- Nvim notifications (vim.notify and such)
+        "lsp", -- LSP status updates
       },
+      component_name_recall = true,
     },
   },
   -- breadcrumbs
@@ -96,17 +105,17 @@ return {
     dependencies = {
       -- All optional, only required for the default setup.
       -- If you customize your config, these aren't necessary.
-      "nvim-telescope/telescope.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope-file-browser.nvim",
+      "telescope.nvim",
+      "plenary.nvim",
+      -- "nvim-telescope/telescope-file-browser.nvim",
     },
     config = function()
-      local builtin = require "veil.builtin"
-      local current_day = os.date "%A"
-      require("veil").setup {
+      local builtin = require("veil.builtin")
+      local current_day = os.date("%A")
+      require("veil").setup({
         sections = {
           builtin.sections.oldfiles(),
-          builtin.sections.buttons {
+          builtin.sections.buttons({
             {
               icon = "",
               text = "Find Files",
@@ -144,17 +153,17 @@ return {
               text = "Config",
               shortcut = "c",
               callback = function()
-                require("telescope").extensions.file_browser.file_browser {
-                  path = vim.fn.stdpath "config",
-                }
+                require("telescope").extensions.file_browser.file_browser({
+                  path = vim.fn.stdpath("config"),
+                })
               end,
             },
-          },
+          }),
         },
         mappings = {},
         startup = true,
         listed = false,
-      }
+      })
     end,
   },
 }

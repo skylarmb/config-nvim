@@ -1,8 +1,16 @@
 -- some pieces of this need to be called in a specific order (e.g. null-ls and mason stuff), so one mega setup fn is the simplest solution
+
 local function setup_lsp()
-  local lsp = require("lsp-zero").preset { "recommended" }
-  local null_ls = require "null-ls"
-  local lspconfig = require "lspconfig"
+  local lsp = require("lsp-zero").preset({
+    name = "recommended",
+    float_border = "rounded",
+    set_lsp_keymaps = {
+      preserve_mappings = true,
+      omit = { "[d", "]d", "gs", "K" },
+    },
+  })
+  local null_ls = require("null-ls")
+  local lspconfig = require("lspconfig")
   lsp.on_attach(function(client, bufnr)
     local opts = { buffer = true, silent = true, noremap = true }
     vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>", opts)
@@ -16,47 +24,46 @@ local function setup_lsp()
     vim.keymap.set("v", "ga", '<cmd>lua require("cosmic-ui").range_code_actions()<cr>', opts)
     vim.keymap.set("n", "gf", "<cmd>LspZeroFormat! null-ls<cr>", opts) -- ! = async formatting
 
-    local status_ok, illuminate = pcall(require, "illuminate")
-    if not status_ok then
-      return
-    end
-    illuminate.on_attach(client)
+    require("illuminate").on_attach(client)
+    require("colorizer").attach_to_buffer(bufnr)
   end)
 
-  lsp.set_server_config {
+  lsp.set_server_config({
     single_file_support = false,
-  }
+  })
 
-  lsp.skip_server_setup { "denols" }
+  lsp.skip_server_setup({ "denols" })
 
-  lsp.set_sign_icons {
+  lsp.set_sign_icons({
     error = "",
     warn = "",
     hint = "",
     info = "◌",
-  }
+  })
 
-  lsp.format_on_save {
+  lsp.format_on_save({
     servers = {
       ["null-ls"] = { "typescript", "typescriptreact", "javascript", "javascriptreact", "lua" },
       ["tsserver"] = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
       ["gopls"] = { "go" },
       ["lua_ls"] = { "lua" },
+      ["dockerls"] = { "dockerfile" },
     },
-  }
+  })
 
-  lsp.ensure_installed {
+  lsp.ensure_installed({
     -- Replace these with whatever servers you want to install
     "tsserver",
     "gopls",
     "lua_ls",
-  }
-  lspconfig.tsserver.setup {
+    "dockerls",
+  })
+  lspconfig.tsserver.setup({
     root_dir = function()
-      return lsp.dir.find_first { "pnpm-workspace.yaml" }
+      return lsp.dir.find_first({ "package.json", ".luarc.json", ".stylua.toml", ".git" })
     end,
-  }
-  lspconfig.lua_ls.setup {
+  })
+  lspconfig.lua_ls.setup({
     settings = {
       Lua = {
         runtime = {
@@ -70,6 +77,7 @@ local function setup_lsp()
         workspace = {
           -- Make the server aware of Neovim runtime files
           library = vim.api.nvim_get_runtime_file("", true),
+          checkThirdParty = false,
         },
         -- Do not send telemetry data containing a randomized but unique identifier
         telemetry = {
@@ -77,7 +85,19 @@ local function setup_lsp()
         },
       },
     },
-  }
+  })
+
+  -- lsp.configure("dockerls", {
+  --   on_attach = function(client, bufnr)
+  --     vim.cmd("wincmd n")
+  --     vim.cmd("set bufhidden=wipe")
+  --     vim.cmd("set buftype=nofile")
+  --     vim.cmd("set nobuflisted")
+  --     vim.cmd("normal ALOGS:")
+  --     vim.cmd("normal o[" .. os.date("!%Y-%m-%dT%H:%M:%SZ") .. "] " .. vim.inspect(bufnr))
+  --     vim.cmd("normal o[" .. os.date("!%Y-%m-%dT%H:%M:%SZ") .. "] " .. vim.inspect(client))
+  --   end,
+  -- })
 
   lsp.setup()
 
@@ -86,7 +106,7 @@ local function setup_lsp()
   local diagnostics = null_ls.builtins.diagnostics
   local code_actions = null_ls.builtins.code_actions
   local hover = null_ls.builtins.hover
-  null_ls.setup {
+  null_ls.setup({
     debug = false,
     sources = {
       formatting.stylua,
@@ -103,9 +123,9 @@ local function setup_lsp()
 
       hover.printenv,
     },
-  }
+  })
 
-  require("mason-null-ls").setup {
+  require("mason-null-ls").setup({
     ensure_installed = {
       "eslint_d",
       "prettierd",
@@ -115,7 +135,7 @@ local function setup_lsp()
     },
     automatic_installation = true,
     handlers = {}, -- nil handler will use default handler for all sources
-  }
+  })
 end
 
 return {
@@ -135,16 +155,18 @@ return {
         -- Optional
         "williamboman/mason.nvim",
         build = function()
-          pcall(vim.cmd, "MasonUpdate")
+          vim.cmd("MasonUpdate")
         end,
       },
       { "williamboman/mason-lspconfig.nvim" }, -- Optional
       { "jose-elias-alvarez/null-ls.nvim" },
       { "jay-babu/mason-null-ls.nvim" },
       -- Autocompletion
-      { "hrsh7th/nvim-cmp" }, -- Required
-      { "hrsh7th/cmp-nvim-lsp" }, -- Required
-      { "L3MON4D3/LuaSnip" }, -- Required
+      { "hrsh7th/nvim-cmp" }, -- Required, managed in cmp.lua
+      { "hrsh7th/cmp-nvim-lsp" }, -- Required, managed in cmp.lua
+      { "L3MON4D3/LuaSnip" }, -- Required, managed in cmp.lua
+      -- debug,
+      { "vim-scripts/Decho" },
     },
     config = setup_lsp,
   },
@@ -156,6 +178,7 @@ return {
       {
         "folke/trouble.nvim",
         "nvim-telescope/telescope.nvim",
+        "nvim-colorizer.lua",
       },
       {
         "CosmicNvim/cosmic-ui",
@@ -176,7 +199,7 @@ return {
         resizing_mappings = false, -- Binds arrow keys to resizing the floating window.
         post_open_hook = nil, -- A
         references = { -- Configure the telescope UI for slowing the references cycling window.
-          telescope = require("telescope.themes").get_dropdown { hide_preview = false },
+          telescope = require("telescope.themes").get_dropdown({ hide_preview = false }),
         },
         -- These two configs can also be passed down to the goto-preview definition and implementation calls for one off "peak" functionality.
         focus_on_open = false, -- Focus the floating window when opening it.
@@ -188,8 +211,4 @@ return {
       }
     end,
   },
-  -- DAP,
-  { "mfussenegger/nvim-dap" },
-  { "rcarriga/nvim-dap-ui" },
-  { "ravenxrz/DAPInstall.nvim" },
 }
