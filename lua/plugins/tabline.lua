@@ -12,7 +12,6 @@ local theme = {
 return {
   {
     "nanozuki/tabby.nvim",
-    dependencies = { "gruvbox-material" },
     init = function()
       vim.opt.showtabline = 2
     end,

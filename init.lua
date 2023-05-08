@@ -35,11 +35,11 @@ require("lazy").setup({
     path = "~/nvim_dev",
     patterns = { "local" },
   },
-  install = { colorscheme = { "gruvbox-material" } },
+  install = { colorscheme = { "gruvbox" } },
   checker = {
     enabled = true,
-    concurrency = 1, -- set to 1 to check for updates very slowly
-    notify = true, -- get a notification when new updates are found
+    concurrency = 1,          -- set to 1 to check for updates very slowly
+    notify = true,            -- get a notification when new updates are found
     frequency = 60 * 60 * 24, -- check for updates once a day
   },
   change_detection = {

@@ -32,7 +32,6 @@ local function setup_lsp()
     single_file_support = false,
   })
 
-
   lsp.set_sign_icons({
     error = "",
     warn = "",
@@ -42,7 +41,7 @@ local function setup_lsp()
 
   lsp.format_on_save({
     servers = {
-      ["null-ls"] = { "typescript", "typescriptreact", "javascript", "javascriptreact", "lua" },
+      ["null-ls"] = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
       ["tsserver"] = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
       ["gopls"] = { "go" },
       ["lua_ls"] = { "lua" },
@@ -57,12 +56,12 @@ local function setup_lsp()
     "lua_ls",
     "dockerls",
   })
-  -- lspconfig.tsserver.setup({
-  --   root_dir = function()
-  --     return lsp.dir.find_first({ "package.json", ".luarc.json", ".stylua.toml", ".git" })
-  --   end,
-  -- })
-  lsp.skip_server_setup({ "denols", "tsserver" })
+  lspconfig.tsserver.setup({
+    root_dir = function()
+      return lsp.dir.find_first({ "package.json", ".luarc.json", ".stylua.toml", ".git" })
+    end,
+  })
+  lsp.skip_server_setup({ "denols" })
   lspconfig.lua_ls.setup({
     settings = {
       Lua = {

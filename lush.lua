@@ -64,18 +64,18 @@ local grey2 = hsluv("#424106")
 local theme = lush(function(injected_functions)
   local sym = injected_functions.sym
   return {
-    Normal({ bg = bg, fg = fg }), -- normal text
-    Red({ bg = red, fg = red.readable() }), -- normal text
+    Normal({ bg = bg, fg = fg }),                    -- normal text
+    Red({ bg = red, fg = red.readable() }),          -- normal text
     Orange({ bg = orange, fg = orange.readable() }), -- normal text
     Yellow({ bg = yellow, fg = yellow.readable() }), -- normal text
-    Green({ bg = green, fg = green.readable() }), -- normal text
-    Aqua({ bg = aqua, fg = aqua.readable() }), -- normal text
-    Blue({ bg = blue, fg = blue.readable() }), -- normal text
+    Green({ bg = green, fg = green.readable() }),    -- normal text
+    Aqua({ bg = aqua, fg = aqua.readable() }),       -- normal text
+    Blue({ bg = blue, fg = blue.readable() }),       -- normal text
     Purple({ bg = purple, fg = purple.readable() }), -- normal text
 
-    BgRed({ bg = bg_red, fg = bg_red.readable() }), -- normal text
+    BgRed({ bg = bg_red, fg = bg_red.readable() }),  -- normal text
 
-    CursorLine({ bg = Normal.bg.lighten(20) }), -- Screen-line at the cursor, when 'cursorline' is set.  Low-priority if foreground (ctermfg OR guifg) is not set.
+    CursorLine({ bg = Normal.bg.lighten(20) }),      -- Screen-line at the cursor, when 'cursorline' is set.  Low-priority if foreground (ctermfg OR guifg) is not set.
 
     -- Or maybe lets style our visual selection to match Cusorlines background,
     -- and render text in Normal's foreground complement.
@@ -98,7 +98,7 @@ local theme = lush(function(injected_functions)
     -- note that we're also using some function aliases, see the readme for more
     -- information.
     -- (`setlocal number`)
-    LineNr({ bg = bg, fg = Normal.bg.li(5) }), -- Line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set.
+    LineNr({ bg = bg, fg = Normal.bg.li(5) }),                    -- Line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set.
     CursorLineNr({ bg = CursorLine.bg, fg = Normal.fg.ro(180) }), -- Like LineNr when 'cursorline' or 'relativenumber' is set for the cursor line.
 
     -- You can also use highlight groups to define "base" colors, if you dont
@@ -109,34 +109,18 @@ local theme = lush(function(injected_functions)
     -- CamelCase is by tradition but you don't have to use it.
     search_base({ bg = green, fg = fg.ro(180) }),
     Search({ search_base }),
-    IncSearch({ bg = orange, fg = fg.ro(180) }),
+    IncSearch { bg = orange, fg = fg.ro(180) },
 
     -- We can also mix colours together
-    -- Type         { fg = Normal.fg.mix(LineNr.fg, 30) }
+    Type { Red },
 
-    -- And that's the basics of using Lush!
-    --
-    -- For more information, see the README and :h lush or run :LushRunTutorial
-
-    -- The following are the Neovim (as of 0.8.0-dev+100-g371dfb174) highlight
-    -- groups, mostly used for styling UI elements.
-    -- Comment them out and add your own properties to override the defaults.
-    -- An empty definition `{}` will clear all styling, leaving elements looking
-    -- like the 'Normal' group.
-    -- To be able to link to a group, it must already be defined, so you may have
-    -- to reorder items as you go.
-    --
-    -- See :h highlight-groups
-    --
-    -- ColorColumn  { }, -- Columns set with 'colorcolumn'
+    ColorColumn({ bg = bg.da(da) }), -- Columns set with 'colorcolumn'
     -- Conceal      { }, -- Placeholder characters substituted for concealed text (see 'conceallevel')
-    -- Cursor       { }, -- Character under the cursor
-    -- lCursor      { }, -- Character under the cursor when |language-mapping| is used (see 'guicursor')
-    -- CursorIM     { }, -- Like Cursor, but used when in IME mode |CursorIM|
-    -- CursorColumn { }, -- Screen-column at the cursor, when 'cursorcolumn' is set.
-    -- CursorLine   { }, -- Screen-line at the cursor, when 'cursorline' is set. Low-priority if foreground (ctermfg OR guifg) is not set.
-    -- Directory    { }, -- Directory names (and other special names in listings)
-    -- DiffAdd      { }, -- Diff mode: Added line |diff.txt|
+    Cursor { Purple },              -- Character under the cursor
+    lCursor { Cursor },              -- Character under the cursor when |language-mapping| is used (see 'guicursor')
+    CursorIM { Cursor },             -- Like Cursor, but used when in IME mode |CursorIM|
+    Directory { Normal },            -- Directory names (and other special names in listings)
+    DiffAdd { Green },               -- Diff mode: Added line |diff.txt|
     -- DiffChange   { }, -- Diff mode: Changed line |diff.txt|
     -- DiffDelete   { }, -- Diff mode: Deleted line |diff.txt|
     -- DiffText     { }, -- Diff mode: Changed text within a changed line |diff.txt|
