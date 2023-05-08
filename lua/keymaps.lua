@@ -173,7 +173,9 @@ keymap("n", "<leader>hw", ":help <C-R>=expand('<cword>')<CR><CR>")
 keymap("n", "<leader>hh", ":help <C-R>=expand('<cexpr>')<CR><CR>")
 keymap("n", "<leader>h", ":help ", { silent = false })
 -- replay notifications on to quickfix list
-keymap("n", "<leader>r", ":NotifierReplay<CR>")
+keymap("n", "<leader>m", ":NotifierReplay<CR>")
+keymap("n", "<leader>r",
+  ":so ~/nvim_dev/gruvbox-material/autoload/gruvbox_material.vim<CR>:colorscheme gruvbox-material<CR>")
 
 ------------ Tabs and Splits ------------
 -- new vertical split
@@ -211,13 +213,13 @@ keymap("n", "<leader>gd", ":Gdiff<CR>")
 ------------ Misc ------------
 -- open Trouble quickfix window
 keymap("n", "<leader>t", "<cmd>TroubleToggle workspace_diagnostics<CR>")
-keymap("n", "<D-s>", ":w<CR>") -- Save
-keymap("v", "<D-c>", '"+y') -- Copy
-keymap("n", "<D-v>", '"+P') -- Paste normal mode
-keymap("v", "<D-v>", '"+P') -- Paste visual mode
-keymap("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert modeend
+keymap("n", "<D-s>", ":w<CR>")                           -- Save
+keymap("v", "<D-c>", '"+y')                              -- Copy
+keymap("n", "<D-v>", '"+P')                              -- Paste normal mode
+keymap("v", "<D-v>", '"+P')                              -- Paste visual mode
+keymap("i", "<D-v>", '<ESC>l"+Pli')                      -- Paste insert modeend
 keymap("n", "<leader>tt", "<cmd>ToDoTxtTasksToggle<CR>") -- TODO list
-keymap("n", "<leader>tn", "<cmd>ToDoTxtCapture<CR>") -- TODO list
+keymap("n", "<leader>tn", "<cmd>ToDoTxtCapture<CR>")     -- TODO list
 
 ------------ Command & Term mode ------------
 -- expand %% to current dir name

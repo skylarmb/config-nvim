@@ -44,7 +44,7 @@ require("lazy").setup({
   },
   change_detection = {
     enabled = true,
-    notify = false, -- dont notify when config files change
+    notify = true,
   },
   performance = {
     rtp = {
