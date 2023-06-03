@@ -1,10 +1,3 @@
--- set working dir for Telescope
--- vim.api.nvim_create_autocmd({ "VimEnter" }, {
---   callback = function()
---     vim.cmd "set verbose=0"
---   end,
--- })
-
 -- template
 -- vim.api.nvim_create_autocmd({ "FileType" }, {
 --   pattern = { "foo" },
@@ -13,12 +6,31 @@
 -- })
 
 -- special syntax handling
+vim.api.nvim_create_autocmd({ "ColorSchemePre" }, {
+  pattern = { "*" },
+  callback = function()
+    vim.cmd([[highlight clear]])
+  end,
+})
+
+-- vim.api.nvim_create_autocmd({ "ColorScheme" }, {
+--   pattern = { "*" },
+--   callback = function()
+--     vim.cmd([[highlight Normal guifg=#fdf4c1 guibg=NONE]])
+--
+--     vim.api.nvim_set_hl(0, "Normal", { bg = "NONE", fg = "#fdf4c1" })
+--     vim.api.nvim_set_hl(0, "NonText", { bg = "NONE", fg = "NONE" })
+--     vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "NONE", fg = "#282828" })
+--   end,
+-- })
+
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = { "*.Jenkinsfile", "Jenkinsfile" },
   callback = function()
     vim.cmd("set ft=groovy")
   end,
 })
+
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = { "Dockerfile.handlebars", "*.Dockerfile.handlebars" },
   callback = function()
@@ -38,6 +50,7 @@ vim.api.nvim_create_autocmd("User", {
 -- autocmd InsertLeave * execute 'normal! mI'
 vim.api.nvim_create_autocmd({ "InsertLeave" }, {
   callback = function()
+    vim.cmd("normal! m'")
     vim.cmd("normal! mI")
   end,
 })
@@ -65,18 +78,18 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-  callback = function()
-    vim.cmd("silent! cd %:p:h")
-  end,
-})
+local function safe_path_name(path)
+  local name = path:gsub("/", "_")
+  return name
+end
 
--- help window in new split
+-- help window in right split if term is large enough
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "help", "man" },
   callback = function()
+    vim.keymap.set({ "n", "x" }, "q", "<cmd>Bwipeout<cr>")
+    if tonumber(vim.fn.winwidth("%")) < 160 then return end
     vim.cmd("wincmd L")
-    vim.keymap.set("n", "q", "<cmd>close<CR>", { noremap = true, silent = true, buffer = true })
   end,
 })
 
@@ -148,78 +161,24 @@ vim.keymap.set("n", "<Leader>b", function()
   end
 end, { silent = true, desc = "Close unused buffers" })
 
--- Alpha when no buffers
--- local function get_listed_buffers()
---   local buffers = {}
---   local len = 0
---   for buffer = 1, vim.fn.bufnr "$" do
---     if vim.fn.buflisted(buffer) == 1 then
---       len = len + 1
---       buffers[len] = buffer
---     end
---   end
---
---   return buffers
--- end
---
--- vim.api.nvim_create_augroup("alpha_on_empty", { clear = true })
-
--- vim.api.nvim_create_autocmd("User", {
---   pattern = "BDeletePre",
---   group = "alpha_on_empty",
---   callback = function(event)
---     local found_non_empty_buffer = false
---     local buffers = get_listed_buffers()
---
---     for _, bufnr in ipairs(buffers) do
---       if not found_non_empty_buffer then
---         local name = vim.api.nvim_buf_get_name(bufnr)
---         local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
---
---         if bufnr ~= event.buf and name ~= "" and ft ~= "Alpha" then
---           found_non_empty_buffer = true
---         end
---       end
---     end
---
---     if not found_non_empty_buffer then
---       vim.cmd [[:Alpha]]
---     end
---   end,
--- })
-
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "Alpha" },
+-- pause illuminate and colorizer on large files
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
   callback = function()
-    vim.keymap.set("n", "q", "", { noremap = true, silent = true, buffer = true })
-    vim.keymap.set("n", "qq", "", { noremap = true, silent = true, buffer = true })
+    local line_count = vim.api.nvim_buf_line_count(0)
+    if line_count >= 1000 then vim.cmd("IlluminatePauseBuf") end
   end,
 })
 
--- " Goyo / Limelight
--- let g:limelight_conceal_ctermfg = 'gray'
--- let g:limelight_default_coefficient = 0.7
--- let g:limelight_paragraph_span = 1
---
--- autocmd! User GoyoEnter call OnGoyoEnter()
--- autocmd! User GoyoLeave call OnGoyoLeave()
---
--- " text editing settings: limelight, text width, word wrap, and spell check
--- function OnGoyoEnter()
---   Limelight
---   " setlocal tw=80
---   " setlocal fo+=a
---   setlocal spell
---   setlocal scrolloff
--- endfunction
---
--- " disable text editing settings
--- function OnGoyoLeave()
---   Limelight!
---   " setlocal tw&
---   " setlocal fo-=a
---   setlocal nospell
---   setlocal scroll
--- endfunction
---
---
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--   pattern = {},
+--   callback = function()
+--     local name = vim.api.nvim_buf_get_name(0)
+--     local ft = vim.api.nvim_buf_get_option(0, "filetype")
+--     if name == "" and ft == "" then
+--       vim.notify("Empty buffer!!")
+--       vim.cmd(":Startify")
+--     else
+--       vim.notify("name: " .. name .. " ft: " .. ft)
+--     end
+--   end,
+-- })

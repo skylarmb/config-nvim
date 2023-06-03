@@ -37,16 +37,16 @@ return {
       cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({}))
     end,
   },
-  { "JoosepAlviste/nvim-ts-context-commentstring", event = "VeryLazy" },
   -- respect editorconfig files
-  { "editorconfig/editorconfig-vim", event = "VeryLazy" },
+  { "editorconfig/editorconfig-vim", lazy = false },
   -- nuke whitespace
-  { "ntpeters/vim-better-whitespace", event = "VeryLazy" },
+  { "ntpeters/vim-better-whitespace", lazy = false },
   -- sorting as a motion
   { "christoomey/vim-sort-motion", event = "VeryLazy" },
   -- snippets and clipboard
   {
     "AckslD/nvim-neoclip.lua",
+    enaled = false,
     event = "VeryLazy",
     dependencies = { "kkharji/sqlite.lua", module = "sqlite" },
     opts = {
@@ -64,13 +64,13 @@ return {
       },
     },
     dependencies = {
-      { "folke/twilight.nvim" },
+      { "twilight.nvim" },
     },
   },
   -- dynamic identation guides
   {
     "lukas-reineke/indent-blankline.nvim",
-    event = { "BufRead" },
+    lazy = false,
     config = function()
       require("indent_blankline").setup({
         -- char = "▏",
@@ -80,7 +80,7 @@ return {
         show_first_indent_level = true,
         use_treesitter = true,
         show_current_context = true,
-        buftype_exclude = { "terminal", "nofile" },
+        buftype_exclude = { "terminal", "nofile", "help" },
         filetype_exclude = {
           "help",
           "packer",
@@ -92,7 +92,7 @@ return {
   -- treesitter-aware commenting that works with TSX
   {
     "numToStr/Comment.nvim",
-    event = { "BufRead" },
+    event = { "VeryLazy" },
     opts = {
       pre_hook = function(ctx)
         -- Only calculate commentstring for tsx filetypes

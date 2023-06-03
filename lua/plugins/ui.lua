@@ -1,6 +1,6 @@
 return {
   -- UI libs used by some plugins
-  { "nvim-lua/plenary.nvim" },
+  { "nvim-lua/plenary.nvim", lazy = false },
   { "MunifTanjim/nui.nvim", event = "VeryLazy" },
   { "kyazdani42/nvim-web-devicons" },
   -- nicer quickfix window
@@ -8,6 +8,7 @@ return {
   -- smooth scroll
   {
     "karb94/neoscroll.nvim",
+    event = "VeryLazy",
     config = function()
       local neoscroll = require("neoscroll")
       local easing = "quadratic"
@@ -43,7 +44,9 @@ return {
             scroll = false
           end
           if scroll then
-            neoscroll.scroll(lines, true, math.abs(lines) * duration_scalar, easing)
+            vim.schedule(function()
+              neoscroll.scroll(lines, true, math.abs(lines) * duration_scalar, easing)
+            end)
           else
             vim.cmd("norm! 10g" .. normal_key)
           end
@@ -86,6 +89,7 @@ return {
   -- unobstrusive notifier
   {
     "vigoux/notifier.nvim",
+    lazy = false,
     opts = {
       components = { -- Order of the components to draw from top to bottom (first nvim notifications, then lsp)
         "nvim", -- Nvim notifications (vim.notify and such)
@@ -100,70 +104,5 @@ return {
     event = "User FileOpened",
   },
   -- start screen
-  {
-    "willothy/veil.nvim",
-    dependencies = {
-      -- All optional, only required for the default setup.
-      -- If you customize your config, these aren't necessary.
-      "telescope.nvim",
-      "plenary.nvim",
-      -- "nvim-telescope/telescope-file-browser.nvim",
-    },
-    config = function()
-      local builtin = require("veil.builtin")
-      local current_day = os.date("%A")
-      require("veil").setup({
-        sections = {
-          builtin.sections.oldfiles(),
-          builtin.sections.buttons({
-            {
-              icon = "",
-              text = "Find Files",
-              shortcut = "p",
-              callback = function()
-                require("telescope.builtin").find_files()
-              end,
-            },
-            {
-              icon = "",
-              text = "Find Word",
-              shortcut = "f",
-              callback = function()
-                require("telescope.builtin").live_grep()
-              end,
-            },
-            {
-              icon = "󱏔",
-              text = "Workspaces",
-              shortcut = "w",
-              callback = function()
-                require("telescope.builtin").buffers()
-              end,
-            },
-            {
-              icon = "",
-              text = "Diagnostics",
-              shortcut = "d",
-              callback = function()
-                require("telescope.builtin").buffers()
-              end,
-            },
-            {
-              icon = "",
-              text = "Config",
-              shortcut = "c",
-              callback = function()
-                require("telescope").extensions.file_browser.file_browser({
-                  path = vim.fn.stdpath("config"),
-                })
-              end,
-            },
-          }),
-        },
-        mappings = {},
-        startup = true,
-        listed = false,
-      })
-    end,
-  },
+  { "mhinz/vim-startify", event = "VimEnter" },
 }

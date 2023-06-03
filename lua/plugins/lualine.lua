@@ -35,7 +35,7 @@ return {
     "nvim-lualine/lualine.nvim",
     opts = {
       options = {
-        theme = "gruvbox-material",
+        -- theme = "molokai",
         icons_enabled = true,
         globalstatus = true,
         component_separators = "",
@@ -54,10 +54,10 @@ return {
             fmt = function(str)
               return str
             end,
-            file_status = true,     -- Displays file status (readonly status, modified status)
+            file_status = true, -- Displays file status (readonly status, modified status)
             newfile_status = false, -- Display new file status (new file means no write after created)
-            path = 4,               -- 4: Filename and parent dir
-            shorting_target = 40,   -- Shortens path to leave 40 spaces in the window
+            path = 4, -- 4: Filename and parent dir
+            shorting_target = 40, -- Shortens path to leave 40 spaces in the window
             symbols = {
               modified = "  ",
               readonly = "  ",

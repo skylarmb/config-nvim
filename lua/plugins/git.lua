@@ -1,10 +1,10 @@
 return {
   -- :Git commands
-  { "tpope/vim-fugitive", event = "BufRead" },
+  { "tpope/vim-fugitive", cmd = { "Git" } },
   -- Git gutter signs
   {
     "lewis6991/gitsigns.nvim",
-    event = "BufRead",
+    event = "VeryLazy",
     opts = {
       signs = {
         add = { hl = "GitSignsAdd", text = "▎", numhl = "GitSignsAddNr", linehl = "GitSignsAddLn" },

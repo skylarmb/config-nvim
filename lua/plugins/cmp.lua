@@ -30,15 +30,13 @@ local kind_icons = {
 }
 
 local has_words_before = function()
-  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
-    return false
-  end
+  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
 end
 
-return {
-  -- general autocomplete plugin
+-- general autocomplete plugin
+local _ = {
   {
     "hrsh7th/nvim-cmp",
     event = { "InsertEnter" },
@@ -71,19 +69,23 @@ return {
           ["<C-p>"] = cmp.mapping.select_prev_item(),
           -- ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-1), { "i", "c" }),
           -- ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(1), { "i", "c" }),
-          ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-          ["<C-e>"] = cmp.mapping({
+          -- ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
+          ["<C-Space>"] = cmp.mapping({
             i = cmp.mapping.abort(),
             c = cmp.mapping.close(),
           }),
-          ["<Tab>"] = cmp_action.luasnip_supertab({
-            behavior = cmp.ConfirmBehavior.Replace, -- important for copilot
-            select = true,
-          }),
-          ["<S-Tab>"] = cmp_action.luasnip_shift_supertab({
-            behavior = cmp.ConfirmBehavior.Replace, -- important for copilot
-            select = true,
-          }),
+          -- ["<Tab>"] = cmp_action.luasnip_supertab({
+          --   behavior = cmp.ConfirmBehavior.Replace, -- important for copilot
+          --   select = true,
+          -- }),
+          -- ["<S-Tab>"] = cmp_action.luasnip_shift_supertab({
+          --   behavior = cmp.ConfirmBehavior.Replace, -- important for copilot
+          --   select = true,
+          -- }),
+          -- ["<C-y>"] = cmp_action.luasnip_supertab({
+          --   behavior = cmp.ConfirmBehavior.Replace, -- important for copilot
+          --   select = true,
+          -- }),
           ["<C-y>"] = vim.schedule_wrap(function(fallback)
             if cmp.visible() and has_words_before() then
               cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
@@ -108,13 +110,32 @@ return {
           end,
         },
         sources = {
-          { name = "copilot" },
-          { name = "luasnip" },
-          { name = "nvim_lsp" },
-          { name = "nvim_lua" },
-          { name = "buffer" },
-          { name = "path" },
-          { name = "nvim_lsp_signature_help" },
+          -- Copilot Source
+          { name = "copilot", group_index = 2 },
+          -- Other Sources
+          { name = "nvim_lsp", group_index = 2 },
+          { name = "path", group_index = 2 },
+          { name = "luasnip", group_index = 2 },
+          -- { name = "nvim_lua" },
+          -- { name = "nvim_lsp_signature_help" },
+        },
+        sorting = {
+          priority_weight = 2,
+          comparators = {
+            require("copilot_cmp.comparators").prioritize,
+
+            -- Below is the default comparitor list and order for nvim-cmp
+            cmp.config.compare.offset,
+            -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+            cmp.config.compare.exact,
+            cmp.config.compare.score,
+            cmp.config.compare.recently_used,
+            cmp.config.compare.locality,
+            cmp.config.compare.kind,
+            cmp.config.compare.sort_text,
+            cmp.config.compare.length,
+            cmp.config.compare.order,
+          },
         },
         confirm_opts = {
           behavior = cmp.ConfirmBehavior.Replace,
@@ -146,7 +167,7 @@ return {
   {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
-    event = { "InsertEnter" },
+    event = { "InsertEnter", "LspAttach" },
     config = function()
       require("copilot").setup({
         suggestion = { enabled = false },
@@ -157,7 +178,7 @@ return {
   -- copilot in autocomplete instead of ghost text
   {
     "zbirenbaum/copilot-cmp",
-    event = { "InsertEnter" },
+    event = { "InsertEnter", "LspAttach" },
     dependencies = { "copilot.lua" },
     config = function()
       require("copilot_cmp").setup()
@@ -165,3 +186,5 @@ return {
     end,
   },
 }
+
+return {}

@@ -57,6 +57,9 @@ return {
             projects = {
               theme = "dropdown",
             },
+            colorscheme = {
+              enable_preview = true,
+            },
           },
           path_display = { "absolute" },
           wrap_results = true,
@@ -72,8 +75,8 @@ return {
           },
           layout_strategy = "vertical",
           layout_config = {
-            width = 0.7,
-            vertical = { height = 0.8 },
+            width = 0.8,
+            vertical = { height = 0.7 },
             -- other layout configuration here
           },
         },
@@ -83,18 +86,4 @@ return {
       require("telescope").load_extension("live_grep_args")
     end,
   },
-  -- {
-  --   "natecraddock/workspaces.nvim",
-  --   cmd = { "Workspaces", "WorkspacesOpen" },
-  --   opts = {
-  --     hooks = {
-  --       open = function()
-  --         vim.cmd "silent! cd %:p:h"
-  --         vim.cmd "Telescope find_files"
-  --       end,
-  --     },
-  --   },
-  -- },
-  -- fast searching with ag
-  { "rking/ag.vim", event = "VeryLazy" },
 }

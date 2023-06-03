@@ -1,13 +1,22 @@
 -- DAP,
 return {
   {
-    "mfussenegger/nvim-dap",
-    event = { "VeryLazy" },
-  },
-  {
     "rcarriga/nvim-dap-ui",
-    event = { "VeryLazy" },
-    dependencies = { "mfussenegger/nvim-dap" },
+    cmd = { "DapToggleBreakpoint", "DapToggleRepl", "DapStepInto" },
+    lazy = true,
+    dependencies = {
+      { "mfussenegger/nvim-dap" },
+      {
+        "ravenxrz/DAPInstall.nvim",
+        lazy = true,
+        config = function()
+          local dap_install = require("dap-install")
+          dap_install.setup({})
+          dap_install.config("python", {})
+          -- dap_install.config("node", {})
+        end,
+      },
+    },
     opts = {
       expand_lines = true,
       icons = { expanded = "", collapsed = "", circular = "" },
@@ -49,9 +58,10 @@ return {
         },
       },
     },
-    init = function()
+    config = function(_, opts)
       local dap = require("dap")
       local dapui = require("dapui")
+      dapui.setup(opts)
       vim.fn.sign_define("DapBreakpoint", {
         text = "",
         texthl = "DiagnosticSignError",
@@ -69,16 +79,6 @@ return {
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
       end
-    end,
-  },
-  {
-    "ravenxrz/DAPInstall.nvim",
-    event = { "VeryLazy" },
-    config = function()
-      local dap_install = require("dap-install")
-      dap_install.setup({})
-      dap_install.config("python", {})
-      -- dap_install.config("node", {})
     end,
   },
   -- symbols and breakpoints right sidebar

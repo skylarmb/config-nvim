@@ -2,8 +2,8 @@ local theme = {
   fill = "TabLineFill",
   -- Also you can do this: fill = { fg='#f2e9de', bg='#907aa9', style='italic' }
   head = "lualine_a_normal",
-  current_tab = "lualine_a_insert",
-  tab = "TabLine",
+  current_tab = { bg = "#a87b4a", fg = "#f2e5bf" },
+  tab = "StatusLine",
   win = "TabLine",
   tail = "lualine_a_normal",
   sep = "lualine_a_normal",
@@ -12,6 +12,8 @@ local theme = {
 return {
   {
     "nanozuki/tabby.nvim",
+    lazy = false,
+    priority = 25,
     init = function()
       vim.opt.showtabline = 2
     end,

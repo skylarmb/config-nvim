@@ -2,23 +2,38 @@ return {
   -- automatic session management
   -- { "tpope/vim-obsession" },
   -- debug logging in separate buffer
-  { "vim-scripts/Decho" },
+  { "vim-scripts/Decho", cmd = { "Decho" } },
   -- repl / debugger
   {
     "tpope/vim-scriptease",
-    event = "VeryLazy",
     ft = { "lua", "viml" },
     cmd = { "PP", "Messages" },
   },
+  -- dump command output to buffer with :Bufferize
+  { "AndrewRadev/bufferize.vim", cmd = { "Bufferize" } },
   -- Bdelete!
-  { "moll/vim-bbye", lazy = false },
+  { "moll/vim-bbye", cmd = { "Bdelete", "Bwipeout" } },
   -- seamless jumping between tmux panes and buffers
   {
     "alexghergh/nvim-tmux-navigation",
+    lazy = false,
     opts = {
       disable_when_zoomed = true, -- defaults to false
     },
   },
+  -- treesitter powered regex explainer
+  {
+    "bennypowers/nvim-regexplainer",
+    cmd = { "RegexplainerShow", "RegexplainerShowPopup", "RegexplainerToggle" },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "MunifTanjim/nui.nvim",
+    },
+    opts = {
+      auto = true,
+    },
+  }, -- treesitter powered regex explainer
+  { "lervag/file-line", lazy = false }, -- handle foo/bar:line:col filenames
   -- floating term
   {
     "akinsho/toggleterm.nvim",
@@ -58,6 +73,7 @@ return {
       function _LAZYGIT_TOGGLE()
         lazygit:toggle()
       end
+
       vim.keymap.set("n", "<leader>gg", "", { remap = false, silent = true, callback = _LAZYGIT_TOGGLE })
     end,
   },

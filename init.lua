@@ -1,13 +1,11 @@
-local function safe_require(module)
-  local ok, err = pcall(require, module)
-  if not ok then
-    print("Error loading " .. module .. ": " .. err)
-  end
-end
+vim.fn.setenv("TERM", "screen-256color")
+
+-- dont run expensive plugins in child nvims
+if os.getenv("NVIM") ~= nil then return end
 
 -- set leader before config / plugins
 vim.g.mapleader = " "
-safe_require("options")
+require("user/options")
 
 -- lazy load plugins
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -28,23 +26,23 @@ require("lazy").setup({
   { import = "plugins" },
 }, {
   defaults = {
-    lazy = false,
+    lazy = true,
     version = false, -- always use the latest git commit
   },
   dev = {
     path = "~/nvim_dev",
     patterns = { "local" },
   },
-  install = { colorscheme = { "gruvbox" } },
+  install = { colorscheme = { "terafox" } },
   checker = {
     enabled = true,
-    concurrency = 1,          -- set to 1 to check for updates very slowly
-    notify = true,            -- get a notification when new updates are found
-    frequency = 60 * 60 * 24, -- check for updates once a day
+    concurrency = 1, -- set to 1 to check for updates very slowly
+    notify = false, -- get a notification when new updates are found
+    frequency = 60 * 60 * 24 * 7, -- check for updates once a week
   },
   change_detection = {
     enabled = true,
-    notify = true,
+    notify = false,
   },
   performance = {
     rtp = {
@@ -63,5 +61,5 @@ require("lazy").setup({
   },
 })
 
-safe_require("keymaps")
-safe_require("autocommands")
+require("user/keymaps")
+require("user/autocommands")
