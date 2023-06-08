@@ -8,14 +8,22 @@ return {
         cmd = "TSPlaygroundToggle",
         lazy = true,
       },
-      { "nvim-treesitter/nvim-tree-docs" },
-      { "nvim-treesitter/nvim-treesitter-context" },
+      -- { "nvim-treesitter/nvim-tree-docs" },
+      -- { "nvim-treesitter/nvim-treesitter-context" },
       { "nvim-treesitter/nvim-treesitter-textobjects" },
     },
     config = function()
       local configs = require("nvim-treesitter.configs")
       configs.setup({
-        tree_docs = { enable = true },
+        -- generate JSDoc comments
+        tree_docs = {
+          enable = true,
+          keymaps = {
+            doc_node_at_cursor = "gcd",
+            doc_all_in_range = "gcd",
+            edit_doc_at_cursor = "gce",
+          },
+        },
         auto_install = true,
         ensure_installed = {
           "lua",
@@ -26,7 +34,7 @@ return {
           "typescript",
           "regex",
         },
-        incremental_selection = { enable = true },
+        incremental_selection = { enable = false },
         textobjects = { enable = true },
         sync_install = false,
         highlight = {
@@ -40,7 +48,7 @@ return {
         autopairs = {
           enable = true,
         },
-        indent = { enable = true, disable = { "python" } },
+        indent = { enable = true, disable = { "python", "yaml" } },
         context_commentstring = {
           enable = true,
           enable_autocmd = false,

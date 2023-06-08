@@ -1,5 +1,14 @@
 -- some pieces of this need to be called in a specific order (e.g. null-ls and mason stuff), so one mega setup fn is the simplest solution
 
+local box = {
+  bl = "┗",
+  br = "┛",
+  h = "━",
+  tl = "┏",
+  tr = "┓",
+  v = "┃",
+}
+
 local kind_icons = {
   Text = "",
   Method = "",
@@ -61,63 +70,140 @@ local function setup_lsp()
 
   local on_attach = function(client, bufnr)
     local opts = { buffer = true, silent = true, noremap = true }
-    vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>", opts)
-    vim.keymap.set("n", "<leader>lI", "<cmd>Mason<cr>", opts)
-    vim.keymap.set("n", "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
-    vim.keymap.set("n", "ge", "<cmd>lua vim.diagnostic.goto_next({buffer=" .. bufnr .. "})<cr>", opts)
-    vim.keymap.set("n", "gp", "<cmd>lua vim.diagnostic.goto_prev({buffer=" .. bufnr .. "})<cr>", opts)
-    vim.keymap.set("n", ";", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-    vim.keymap.set("n", "rn", "<cmd>lua require('cosmic-ui').rename()<CR>", opts)
-    vim.keymap.set("n", "ga", '<cmd>lua require("cosmic-ui").code_actions()<cr>')
-    vim.keymap.set("v", "ga", '<cmd>lua require("cosmic-ui").range_code_actions()<cr>', opts)
-    vim.keymap.set("n", "gf", "<cmd>LspZeroFormat! null-ls<cr>", opts) -- ! = async formatting
+    local diag_err = { buffer = bufnr, severity = vim.diagnostic.severity.ERROR }
+    local diag_any = { buffer = bufnr }
+    local keymap = require("user.utils").keymap
+    keymap.n("gli", "<cmd>LspInfo<cr>", opts)
+    keymap.n("glI", "<cmd>Mason<cr>", opts)
+
+    keymap.n("gq", function()
+      vim.diagnostic.setloclist()
+    end, opts)
+
+    ---------------------------------------------------------------------------
+    -- DIAGNOSTIC
+    ---------------------------------------------------------------------------
+    -- errors
+    keymap.n("gE", function()
+      vim.diagnostic.goto_prev(diag_err)
+    end, opts)
+    keymap.n("gP", function()
+      vim.diagnostic.goto_prev(diag_err)
+    end, opts)
+    -- all diagnostics
+    keymap.n("gp", function()
+      vim.diagnostic.goto_next(diag_any)
+    end, opts)
+    keymap.n("ge", function()
+      vim.diagnostic.goto_next(diag_any)
+    end, opts)
+    keymap.leader("lq", function()
+      vim.diagnostic.setloclist()
+    end)
+    keymap.n("gl", function()
+      vim.diagnostic.open_float()
+    end)
+    keymap.leader("wd", function()
+      vim.cmd("TroubleToggle workspace_diagnostics")
+    end)
+
+    -- hints and help
+    keymap.n("gh", function()
+      vim.lsp.buf.signature_help()
+    end, opts)
+
+    keymap.n("rn", function()
+      require("cosmic-ui").rename()
+    end, opts)
+    keymap.n("ga", function()
+      require("cosmic-ui").code_actions()
+    end)
+    keymap.v("ga", function()
+      require("cosmic-ui").range_code_actions()
+    end, opts)
+
+    -- preview lsp jumps by default
+    keymap.n("gd", function()
+      require("goto-preview").goto_preview_definition()
+    end, opts)
+    keymap.n("gD", function()
+      require("goto-preview").goto_preview_type_definition()
+    end)
+    keymap.n("gs", function()
+      -- attempt to jump source definition (ignoring .d.ts shadowing)
+      require("typescript").goToSourceDefinition(vim.fn.win_getid(), { fallback = true })
+    end)
+    keymap.n("gi", function()
+      require("goto-preview").goto_preview_implementation()
+    end)
+    keymap.n("gr", function()
+      require("goto-preview").goto_preview_references()
+    end)
+    keymap.n("gp", function()
+      require("goto-preview").close_all_win()
+    end)
+    -- cosmic handlers
+    keymap.n("rn", function()
+      require("cosmic-ui").rename()
+    end)
+    keymap.n("ga", function()
+      require("cosmic-ui").code_actions()
+    end)
+    keymap.v("ga", function()
+      require("cosmic-ui").range_code_actions()
+    end)
+    -- default lsp handlers, good as a fallback for above preview behavior
+    keymap.n("gld", function()
+      vim.lsp.buf.definition()
+    end, opts)
+    keymap.n("gli", function()
+      vim.lsp.buf.declaration()
+    end)
+    keymap.n("glt", function()
+      vim.lsp.buf.declaration()
+    end)
+    keymap.n("glr", function()
+      vim.lsp.buf.references()
+    end)
+    keymap.leader("glR", function()
+      vim.lsp.buf.rename()
+    end)
+    keymap.leader("gla", function()
+      vim.lsp.buf.code_action()
+    end)
+    keymap.leader("ls", function()
+      vim.lsp.buf.signature_help()
+    end)
+    -- fix everything
+    keymap.n("gf", function()
+      vim.lsp.buf.format({
+        async = false,
+        timeout_ms = 2000,
+        filter = function(c)
+          -- ignore language server formatters as null-ls replaces LSP format
+          --    tsserver  => prettier, eslint
+          --    lua_ls    => stylua
+          -- etc
+          return c.name == "null-ls"
+        end,
+      })
+
+      local typescript = require("typescript")
+      typescript.actions.fixAll()
+      typescript.actions.addMissingImports()
+      typescript.actions.removeUnused()
+    end)
 
     illuminate.on_attach(client)
     colorizer.attach_to_buffer(bufnr)
-    local function debug_handler(name, handler)
-      return function(...)
-        local args = { ... }
-        print("---DEBUG: " .. name .. " ---")
-        print(vim.inspect(args[2]))
-
-        -- handler(...)
-        vim.lsp.util.open_floating_preview(
-          {
-            "hello",
-            "world",
-          },
-          "",
-          {
-            height = 10,
-            width = 60,
-            focus = false,
-            focusable = false,
-            close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-          }
-        )
-      end
-    end
     local open_float = vim.lsp.util.open_floating_preview
-    local box = {
-      topleft = "┏",
-      topright = "┓",
-      bottomleft = "┗",
-      bottomright = "┛",
-      bottom = "▁",
-      top = "▔",
-      vertical = "┃",
-      horizontal = "━",
-      left = "▏",
-      right = "▕",
-    }
-
     vim.lsp.util.open_floating_preview = function(contents, syntax, o)
       local function border(side)
-        local b = string.rep(box.horizontal, (o.width or 80) - 2)
+        local b = string.rep(box.h, (o.width or 80) - 2)
         if side == "top" then
-          return box.topleft .. b .. box.topright
+          return box.tl .. b .. box.tr
         end
-        return box.bottomleft .. b .. box.bottomright
+        return box.bl .. b .. box.br
       end
       local function is_box_char(char)
         local res = char:match("^[" .. table.concat(vim.tbl_values(box), "|") .. "]")
@@ -136,11 +222,10 @@ local function setup_lsp()
       end
       contents = vim.tbl_map(function(v)
         if not is_box_char(v) then
-          return string.format("%s %-78s %s", box.vertical, v, box.vertical)
+          return string.format("%s %-78s %s", box.v, v, box.v)
         end
         return v
       end, contents)
-      print(vim.inspect(contents))
       local res = open_float(contents, "Pmenu", o)
       return res
     end
@@ -154,7 +239,6 @@ local function setup_lsp()
         header = "",
         prefix = "",
         format = function(diagnostic)
-          print(vim.inspect(diagnostic))
           local source = string.lower(diagnostic.source):gsub("[^%w]", "_"):gsub("_$", "")
           local prefix = (severity_icons[diagnostic.severity] or "") .. " "
           local message = " " .. diagnostic.message .. " "
@@ -296,70 +380,6 @@ local function setup_lsp()
     automatic_installation = false,
     handlers = {}, -- nil handler will use default handler for all sources
   })
-  -- vim.diagnostic.config({
-  --   virtual_text = false,
-  --   float = {
-  --     scope = "line",
-  --     pad_top = 0,
-  --     pad_bottom = 1,
-  --     width = 80,
-  --     -- border = "shadow",
-  --     -- border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
-  --     border = {
-  --       { " ", "FloatShadowThrough" },
-  --       { " ", "FloatShadowThrough" },
-  --       { " ", "FloatShadowThrough" },
-  --       { "▏", "FloatShadow" },
-  --       { " ", "FloatShadow" },
-  --       { "▔", "FloatShadow" },
-  --       { " ", "FloatShadowThrough" },
-  --       { "▕", "FloatShadowThrough" },
-  --     },
-  --
-  --     severity_sort = true,
-  --     -- border = {
-  --     --   { "╭", "FloatBorder" },
-  --     --   { "─", "FloatBorder" },
-  --     --   { "╮", "FloatBorder" },
-  --     --   { "│", "FloatBorder" },
-  --     --   { "╯", "FloatBorder" },
-  --     --   { "─", "FloatBorder" },
-  --     --   { "╰", "FloatBorder" },
-  --     --   { "│", "FloatBorder" },
-  --     -- },
-  --     source = false,
-  --     header = " ",
-  --     -- {
-  --     --   " " .. string.rep("─", 78) .. " ",
-  --     --   "Pmenu",
-  --     -- },
-  --     prefix = " ",
-  --     suffix = " ",
-  --     -- float_border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }, -- Border characters of the floating window
-  --     -- float_border = {
-  --     --   { "╭", "FloatBorder" },
-  --     --   { "▔", "FloatBorder" },
-  --     --   { "╲", "FloatBorder" },
-  --     --   { "▕", "FloatBorder" },
-  --     --   { "╯", "FloatBorder" },
-  --     --   { "▁", "FloatBorder" },
-  --     --   { "╲", "FloatBorder" },
-  --     --   { "▏", "FloatBorder" },
-  --     -- float_border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
-  --     -- },
-  --
-  --     -- todo:
-  --     -- icon per source
-  --     -- typescript source name?
-  --     format = function(diagnostic)
-  --       print(vim.inspect(diagnostic))
-  --       local source = string.lower(diagnostic.source):gsub("[^%w]", "_"):gsub("_$", "")
-  --       local prefix = (severity_icons[diagnostic.severity] or "") .. " "
-  --       local message = " " .. diagnostic.message .. " "
-  --       return prefix .. source .. " \n" .. message .. "\n"
-  --     end,
-  --   },
-  -- })
 
   ---- CMP ----
   require("copilot").setup({
@@ -421,11 +441,10 @@ end
 return {
   {
     "VonHeikemen/lsp-zero.nvim",
-    lazy = false,
+    lazy = true,
     event = { "BufRead" },
     branch = "v2.x",
     dependencies = {
-      { "j-hui/fidget.nvim" },
       -- LSP Support
       { "neovim/nvim-lspconfig" }, -- Required
       {
@@ -438,6 +457,8 @@ return {
       { "williamboman/mason-lspconfig.nvim" }, -- Optional
       { "jose-elias-alvarez/null-ls.nvim" },
       { "jay-babu/mason-null-ls.nvim" },
+      { "L3MON4D3/LuaSnip" }, -- Required, managed in cmp.lua
+
       -- Shims / API for tsserver functionality
       { "jose-elias-alvarez/typescript.nvim" },
 
@@ -447,27 +468,24 @@ return {
       { "hrsh7th/cmp-buffer" },
       { "hrsh7th/cmp-path" },
       { "hrsh7th/cmp-cmdline" },
-      { "L3MON4D3/LuaSnip" }, -- Required, managed in cmp.lua
       { "zbirenbaum/copilot.lua" },
       { "zbirenbaum/copilot-cmp" },
-
-      -- debug,
-      { "vim-scripts/Decho" },
     },
     config = setup_lsp,
   },
   -- floating previews for LSP definitions, references etc
   {
+    "folke/trouble.nvim",
+    opts = {
+      severity = vim.diagnostic.severity.ERROR,
+    },
+  },
+  {
     "rmagatti/goto-preview",
     event = { "LspAttach" },
     dependencies = {
-      {
-        "folke/trouble.nvim",
-        opts = {
-          severity = vim.diagnostic.severity.ERROR,
-        },
-      },
-      { "nvim-telescope/telescope.nvim" },
+      "trouble.nvim",
+      { "telescope.nvim" },
       { "nvim-colorizer.lua" },
       {
         "CosmicNvim/cosmic-ui",
@@ -478,27 +496,12 @@ return {
       },
     },
     config = function()
-      return {
-        width = 80, -- Width of the floating window
-        height = 15, -- Height of the floating window
-        border = "shadow",
-        -- border = "shadow",
-        default_mappings = false, -- Bind default mappings
-        debug = false, -- Print debug information
-        opacity = nil, -- 0-100 opacity level of the floating window where 100 is fully transparent.
-        resizing_mappings = false, -- Binds arrow keys to resizing the floating window.
-        post_open_hook = nil, -- A
-        references = { -- Configure the telescope UI for slowing the references cycling window.
-          telescope = require("telescope.themes").get_dropdown({ hide_preview = false }),
-        },
-        -- These two configs can also be passed down to the goto-preview definition and implementation calls for one off "peak" functionality.
-        focus_on_open = false, -- Focus the floating window when opening it.
-        dismiss_on_move = true, -- Dismiss the floating window when moving the cursor.
-        force_close = true, -- passed into vim.api.nvim_win_close's second argument. See :h nvim_win_close
-        bufhidden = "wipe", -- the bufhidden option to set on the floating window. See :h bufhidden
-        stack_floating_preview_windows = false, -- Whether to nest floating windows
-        preview_window_title = { enable = false }, -- Whether to set
-      }
+      require("goto-preview").setup({
+        width = 120,
+        height = 68, -- 16:10 ratio
+        border = { box.tl, box.h, box.tr, box.v, box.br, box.h, box.bl, box.v },
+        stack_floating_preview_windows = false,
+      })
     end,
   },
 }

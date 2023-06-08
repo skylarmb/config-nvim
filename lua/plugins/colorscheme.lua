@@ -1,10 +1,20 @@
 THEME = os.getenv("THEME") or "dark"
-vim.opt.background = THEME
-
+vim.opt.background = "dark"
 vim.cmd("colorscheme kanagawa-kai")
 
 return {
-  { "echasnovski/mini.colors" },
+  -- { "echasnovski/mini.colors" },
+  -- {
+  --   "mcchrish/zenbones.nvim",
+  --   lazy = false,
+  --   priority = 1000,
+  --   dependencies = { "rktjmp/lush.nvim" },
+  --   config = function()
+  --     vim.opt.background = "light"
+  --     vim.g.zenbones_lightness = "dim"
+  --     vim.cmd("colorscheme zenbones")
+  --   end,
+  -- },
   -- {
   --   "sainnhe/gruvbox-material",
   --   lazy = true,

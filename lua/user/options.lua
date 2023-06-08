@@ -2,6 +2,7 @@
 HOME = os.getenv("HOME")
 
 vim.opt.pumblend = 0
+vim.opt.winblend = 0
 vim.opt.termguicolors = true
 vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
 vim.opt.shada = [['50,f1,<100,s50,:50,/50,@50,h]] -- default value: "!,'100,<50,s10,h"

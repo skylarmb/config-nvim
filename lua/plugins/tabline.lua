@@ -1,11 +1,12 @@
+local hi_head = { bg = "#353532", fg = "#d5af67" }
+local hi_tab = { bg = "#353532", fg = "#c9973a" }
 local theme = {
-  fill = "TabLineFill",
-  -- Also you can do this: fill = { fg='#f2e9de', bg='#907aa9', style='italic' }
-  head = "lualine_a_normal",
-  current_tab = { bg = "#a87b4a", fg = "#f2e5bf" },
-  tab = "StatusLine",
-  win = "TabLine",
-  tail = "lualine_a_normal",
+  fill = { bg = "#292827", fg = "#c9973a" },
+  head = hi_head,
+  current_tab = { bg = "#4a482c", fg = "#dcbb7e" },
+  tab = hi_tab,
+  win = hi_tab,
+  tail = hi_head,
   sep = "lualine_a_normal",
 }
 

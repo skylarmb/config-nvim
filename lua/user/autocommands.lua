@@ -6,13 +6,13 @@
 -- })
 
 -- special syntax handling
-vim.api.nvim_create_autocmd({ "ColorSchemePre" }, {
-  pattern = { "*" },
-  callback = function()
-    vim.cmd([[highlight clear]])
-  end,
-})
-
+-- vim.api.nvim_create_autocmd({ "ColorSchemePre" }, {
+--   pattern = { "*" },
+--   callback = function()
+--     vim.cmd([[highlight clear]])
+--   end,
+-- })
+--
 -- vim.api.nvim_create_autocmd({ "ColorScheme" }, {
 --   pattern = { "*" },
 --   callback = function()
@@ -23,6 +23,51 @@ vim.api.nvim_create_autocmd({ "ColorSchemePre" }, {
 --     vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "NONE", fg = "#282828" })
 --   end,
 -- })
+
+-- if accidentally editing an absolute git file path from a subdirectory, do
+-- the right thing and edit the file
+vim.api.nvim_create_autocmd("BufReadCmd", {
+  pattern = "*",
+  callback = function()
+    local path = vim.fn.expand("%:t")
+    local git_root = vim.fn.system("git ls-files --full-name | grep -o " .. path):gsub("%s+", "")
+    local git_relative_path = git_root .. "/" .. vim.fn.expand("%")
+    local exists = vim.fn.filereadable
+    if not exists(path) and exists(git_relative_path) then
+      vim.notify("Opening git relative path instead: " .. git_relative_path)
+      -- vim.cmd("edit " .. git_relative_path)
+      -- vim.cmd("wincmd only")
+      return
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "ScrollEnd",
+  callback = function()
+    -- print("----END-----------------------------------------------------")
+    vim.wo.cursorline = true
+    vim.o.tabline = "%!TabbyRenderTabline()"
+
+    vim.cmd("IndentBlanklineEnable")
+    vim.cmd("set eventignore=")
+    vim.cmd("IlluminateResume")
+  end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "ScrollStart",
+  callback = function()
+    -- print("----START-----------------------------------------------------")
+    vim.wo.cursorline = false
+    -- freeze the tabline during scroll so it doesnt constantly re-render on every CursorMoved event
+    local tabline_tmp = vim.api.nvim_exec2([[echo TabbyRenderTabline()]], { output = true })
+    vim.o.tabline = tabline_tmp.output
+    vim.cmd("IndentBlanklineDisable")
+    vim.cmd("IlluminatePause")
+    vim.cmd("set eventignore=CursorMoved,WinScrolled")
+  end,
+})
 
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = { "*.Jenkinsfile", "Jenkinsfile" },
@@ -40,7 +85,6 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "LazyInstall",
-  once = true,
   callback = function()
     vim.cmd("helptags ALL")
     vim.notify("Regenerated helptags!")
@@ -88,7 +132,9 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "help", "man" },
   callback = function()
     vim.keymap.set({ "n", "x" }, "q", "<cmd>Bwipeout<cr>")
-    if tonumber(vim.fn.winwidth("%")) < 160 then return end
+    if tonumber(vim.fn.winwidth("%")) < 160 then
+      return
+    end
     vim.cmd("wincmd L")
   end,
 })
@@ -130,6 +176,22 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "ColorSchemePre" }, {
+  pattern = { "*" },
+  callback = function()
+    vim.cmd([[highlight clear]])
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+  pattern = { "kanagawa-kai.lua" },
+  callback = function()
+    vim.cmd("colorscheme kanagawa-kai")
+    -- refresh remote nvim instances
+    os.execute("nvr -cc 'colorscheme kanagawa-kai'")
+  end,
+})
+
 -- close unused buffers
 local id = vim.api.nvim_create_augroup("startup", {
   clear = false,
@@ -165,7 +227,10 @@ end, { silent = true, desc = "Close unused buffers" })
 vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
   callback = function()
     local line_count = vim.api.nvim_buf_line_count(0)
-    if line_count >= 1000 then vim.cmd("IlluminatePauseBuf") end
+    if line_count >= 1000 then
+      vim.cmd("IlluminatePauseBuf")
+      vim.notify("Illuminate paused")
+    end
   end,
 })
 
@@ -182,3 +247,25 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
 --     end
 --   end,
 -- })
+
+-- -- refresh lualine on LSP progress
+vim.api.nvim_create_augroup("lualine_augroup", {
+  clear = false,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  group = "lualine_augroup",
+  pattern = "LspProgressStatusUpdated",
+  callback = function()
+    require("lualine").refresh({
+      scope = "tabpage", -- scope of refresh all/tabpage/window
+      place = { "statusline" }, -- lualine segment ro refresh.
+    })
+  end,
+})
+-- vim.cmd([[
+-- augroup lualine_augroup
+--     autocmd!
+--     autocmd User LspProgressStatusUpdated lua require("lualine").refresh()
+-- augroup END
+-- ]])

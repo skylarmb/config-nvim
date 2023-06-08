@@ -45,7 +45,9 @@ function M.shell_cmd(command)
 
   stdout_file:close()
   stderr_file:close()
-  if exit ~= 0 then logger.error("shell_cmd", stderr) end
+  if exit ~= 0 then
+    logger.error("shell_cmd", stderr)
+  end
   os.remove(tmpfile)
   os.remove(tmpfile .. ".err")
 
@@ -55,7 +57,11 @@ end
 -- warning: very expensive! only use for debugging broken modules
 function M.prequire(module)
   local ok, err = pcall(require, module)
-  if not ok then logger.error("prequire", "Error loading " .. module .. ": " .. err) end
+  if not ok then
+    logger.error("prequire", "Error loading " .. module .. ": " .. err)
+  end
 end
+
+M.keymap = require("user.utils.keymap")
 
 return M

@@ -1,6 +1,15 @@
 return {
   -- automatic session management
-  -- { "tpope/vim-obsession" },
+  {
+    "rmagatti/auto-session",
+    lazy = false,
+    config = function()
+      require("auto-session").setup({
+        log_level = "error",
+        auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
+      })
+    end,
+  },
   -- debug logging in separate buffer
   { "vim-scripts/Decho", cmd = { "Decho" } },
   -- repl / debugger
@@ -11,6 +20,8 @@ return {
   },
   -- dump command output to buffer with :Bufferize
   { "AndrewRadev/bufferize.vim", cmd = { "Bufferize" } },
+  -- debug echo,
+  { "vim-scripts/Decho", cmd = { "Decho" } },
   -- Bdelete!
   { "moll/vim-bbye", cmd = { "Bdelete", "Bwipeout" } },
   -- seamless jumping between tmux panes and buffers
