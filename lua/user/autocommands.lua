@@ -24,20 +24,34 @@
 --   end,
 -- })
 
--- if accidentally editing an absolute git file path from a subdirectory, do
--- the right thing and edit the file
-vim.api.nvim_create_autocmd("BufReadCmd", {
+-- If accidentally editing a git-relative absolute file path that does not
+-- exist, but it is an actual file path relative to the git root, edit the file
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  once = true,
   pattern = "*",
   callback = function()
-    local path = vim.fn.expand("%:t")
-    local git_root = vim.fn.system("git ls-files --full-name | grep -o " .. path):gsub("%s+", "")
-    local git_relative_path = git_root .. "/" .. vim.fn.expand("%")
+    local path = vim.fn.expand("<afile>")
+    local git_root = vim.fn.system("git rev-parse --show-toplevel"):gsub("%s+", "")
+    local git_relative_path = vim.fn.system("git ls-files --full-name | grep -o " .. path):gsub("%s+", "")
+    local git_path = git_root .. "/" .. git_relative_path
     local exists = vim.fn.filereadable
-    if not exists(path) and exists(git_relative_path) then
-      vim.notify("Opening git relative path instead: " .. git_relative_path)
-      -- vim.cmd("edit " .. git_relative_path)
-      -- vim.cmd("wincmd only")
+    -- edit git path instead of absolute path
+    if exists(path) == 0 and exists(git_path) == 1 then
+      vim.cmd("new " .. git_path)
+      vim.cmd("wincmd o")
+      vim.cmd("filetype detect")
+      vim.schedule(function()
+        vim.notify("Editing git path instead:")
+        vim.notify(git_relative_path)
+      end)
       return
+    end
+
+    -- show start screen instead of empty buffer
+    if exists(path) == 0 and vim.fn.expand("%") == "" then
+      vim.schedule(function()
+        vim.cmd("Startify")
+      end)
     end
   end,
 })

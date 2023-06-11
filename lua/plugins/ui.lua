@@ -141,5 +141,5 @@ return {
     end,
   },
   -- -- start screen
-  -- { "mhinz/vim-startify", lazy = false },
+  { "mhinz/vim-startify", lazy = false },
 }
