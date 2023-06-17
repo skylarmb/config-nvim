@@ -24,6 +24,7 @@ leader("<leader>", "<cmd>nohlsearch<CR>")
 
 -- Better paste
 v("p", '"_dP')
+nvo(")", "")
 
 -- Insert --
 -- Press jk fast to enter
@@ -107,14 +108,14 @@ n("<C-l>", cmd("NvimTmuxNavigateRight"))
 -- redo with U
 n("U", "<C-r>")
 -- close buffers
-n("qq", "m'" .. cmd("close"))
-n("qd", "m'" .. cmd("Bdelete!"))
+n("qq", "m'" .. cmd(":close"))
+n("qd", "m'" .. cmd(":Bdelete!"))
 n("qa", "m'<cmd>wqa<CR>")
 -- rebind macro recording to not conflict with qq
 n("q", "")
 leader("q", "q")
 -- ww to write from normal mode
-n("ww", "<cmd>w<cr>")
+n("ww", cmd("w"))
 -- yank current file name and line number
 n("yl", "<cmd>let @*=expand('%') . ':' . line('.')<CR>")
 -- yank current file name
@@ -225,6 +226,7 @@ leader("tn", "<cmd>ToDoTxtCapture<CR>") -- TODO list
 leader("a", "cs\"'", opts.remap) -- change quotes
 leader("s", "cs'\"", opts.remap) -- change quotes
 leader("I", cmd("Inspect")) -- Inspect highlight group under cursor
+leader("c", cmd("cd ~/.config/nvim | tabe ./init.lua")) -- Inspect highlight group under cursor
 
 ------------ Command & Term mode ------------
 -- expand %% to current dir name

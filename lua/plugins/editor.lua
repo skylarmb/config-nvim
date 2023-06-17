@@ -44,15 +44,15 @@ return {
   -- sorting as a motion
   { "christoomey/vim-sort-motion", event = "VeryLazy" },
   -- snippets and clipboard
-  {
-    "AckslD/nvim-neoclip.lua",
-    enaled = false,
-    event = "VeryLazy",
-    dependencies = { "kkharji/sqlite.lua", module = "sqlite" },
-    opts = {
-      enable_persistent_history = true, -- persist clipboard between sessions
-    },
-  },
+  -- {
+  --   "AckslD/nvim-neoclip.lua",
+  --   enabled = false,
+  --   event = "VeryLazy",
+  --   dependencies = { "kkharji/sqlite.lua", module = "sqlite" },
+  --   opts = {
+  --     enable_persistent_history = true, -- persist clipboard between sessions
+  --   },
+  -- },
   -- Distraction-free editing
   {
     "Pocco81/true-zen.nvim",

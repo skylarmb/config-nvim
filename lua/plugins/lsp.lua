@@ -10,7 +10,7 @@ local box = {
 }
 
 local kind_icons = {
-  Text = "",
+  Text = "󰊄",
   Method = "",
   Function = "",
   Constructor = "",

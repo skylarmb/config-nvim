@@ -6,8 +6,13 @@ local base_scalar = 10 -- ms per line scrolled
 -- trigger a smooth scroll if a cursor jump would go beyond the window
 -- otherwise do normal cursor jump
 local function doscroll(lines)
-  local neoscroll = require("neoscroll")
   local normal_key = lines > 0 and "j" or "k"
+  -- if vim.g.neovide then
+  --   vim.cmd("norm! 10g" .. normal_key)
+  --   return
+  -- end
+
+  local neoscroll = require("neoscroll")
   local duration_ms = math.abs(lines) * base_scalar
   local indent = require("indent_blankline.commands")
 
@@ -40,7 +45,7 @@ return {
   -- UI libs used by some plugins
   { "nvim-lua/plenary.nvim", lazy = false },
   { "MunifTanjim/nui.nvim", event = "VeryLazy" },
-  { "nvim-tree/nvim-web-devicons" },
+  { "nvim-tree/nvim-web-devicons", lazy = false },
   -- nicer quickfix window
   { "kevinhwang91/nvim-bqf", event = "VeryLazy" },
   -- smooth scroll
@@ -55,7 +60,7 @@ return {
         hide_cursor = true,
         cursor_scrolls_alone = true,
         easing_function = easing,
-        respect_scrolloff = true,
+        respect_scrolloff = false,
         pre_hook = function()
           vim.cmd("doautocmd User ScrollStart")
         end,

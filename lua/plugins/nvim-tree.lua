@@ -1,7 +1,7 @@
 local const = require("user/constants")
 return {
   {
-    "kyazdani42/nvim-tree.lua",
+    "nvim-tree/nvim-tree.lua",
     cmd = { "NvimTreeFindFileToggle" },
     opts = {
       sync_root_with_cwd = true,
@@ -28,13 +28,13 @@ return {
           git_placement = "after",
           glyphs = {
             git = {
-              unstaged = "",
-              staged = "",
-              renamed = "",
-              unmerged = "",
-              untracked = "",
-              deleted = "",
-              ignored = "⊠",
+              unstaged = "~",
+              staged = "+",
+              renamed = "&",
+              unmerged = "!",
+              untracked = "?",
+              deleted = "-",
+              ignored = "x",
             },
           },
         },

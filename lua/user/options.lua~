@@ -123,7 +123,8 @@ vim.g.mergetool_layout = "bmr"
 
 -- vim.g.neovide_scale_factor = 1.2
 -- GUI font
-vim.o.guifont = "DankMono Nerd Font Mono:h14"
+-- vim.o.guifont = "RobotoMono Nerd Font:h14:#e-antialias:#h-none"
+vim.o.guifont = "RobotoMono Nerd Font:h14:#e-antialias:#h-none"
 vim.opt.guicursor:append("a:blinkon0")
 vim.opt.linespace = 0
 

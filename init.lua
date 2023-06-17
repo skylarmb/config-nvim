@@ -1,7 +1,9 @@
 vim.fn.setenv("TERM", "screen-256color")
 
 -- dont run expensive plugins in child nvims
-if os.getenv("NVIM") ~= nil then return end
+if os.getenv("NVIM") ~= nil then
+  return
+end
 
 -- set leader before config / plugins
 vim.g.mapleader = " "

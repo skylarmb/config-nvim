@@ -46,15 +46,13 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
       end)
       return
     end
-
-    -- show start screen instead of empty buffer
-    if exists(path) == 0 and vim.fn.expand("%") == "" then
-      vim.schedule(function()
-        vim.cmd("Startify")
-      end)
-    end
   end,
 })
+-- vim.api.nvim_create_autocmd("BufWinEnter", {
+--   pattern = "*",
+--   callback = function()
+--   end,
+-- })
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "ScrollEnd",
@@ -245,6 +243,14 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
       vim.cmd("IlluminatePauseBuf")
       vim.notify("Illuminate paused")
     end
+  end,
+})
+
+-- override some plugin keymaps to noop
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+  callback = function()
+    vim.keymap.set({ "n", "v", "o" }, ")", function() end, { noremap = true, silent = true, buffer = true })
+    vim.keymap.set({ "n", "v", "o" }, "(", function() end, { noremap = true, silent = true, buffer = true })
   end,
 })
 

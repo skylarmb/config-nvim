@@ -1,4 +1,13 @@
 return {
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    init = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+    end,
+    opts = {},
+  },
   -- automatic session management
   {
     "rmagatti/auto-session",
@@ -10,8 +19,6 @@ return {
       })
     end,
   },
-  -- debug logging in separate buffer
-  { "vim-scripts/Decho", cmd = { "Decho" } },
   -- repl / debugger
   {
     "tpope/vim-scriptease",

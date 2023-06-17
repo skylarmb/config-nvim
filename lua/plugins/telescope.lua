@@ -29,7 +29,10 @@ return {
     "nvim-telescope/telescope.nvim",
     event = "VeryLazy",
     dependencies = {
-      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+      },
       { "nvim-telescope/telescope-live-grep-args.nvim" },
       { "stevearc/dressing.nvim" },
       { "project.nvim" },
@@ -49,7 +52,15 @@ return {
         defaults = {
           prompt_prefix = " ",
           selection_caret = " ",
-          file_ignore_patterns = { "^.git", "^node_modules", "^build/", "^dist/", "^.pnpm/", "^.cache/" },
+          file_ignore_patterns = {
+            "^.git/",
+            "^node_modules",
+            "^build/",
+            "^dist/",
+            "^.pnpm/",
+            "^.cache/",
+            "*.js.map",
+          },
           pickers = {
             find_files = {
               theme = "dropdown",
@@ -60,6 +71,20 @@ return {
             colorscheme = {
               enable_preview = true,
             },
+          },
+          vimgrep_arguments = {
+            "rg",
+            -- added
+            "--no-config",
+            "--hidden",
+            "--follow",
+            -- defaults
+            "--color=never",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            "--smart-case",
           },
           path_display = { "absolute" },
           wrap_results = true,

@@ -14,9 +14,13 @@ local expand = {
 M.expand = expand
 
 local cmd = function(...)
-  local s = table.concat({ ... }, " ")
-  local pk = string.sub(s, 1, 1) == ":" and ":" or "<cmd>"
-  return pk .. s .. "<cr>"
+  local c = table.concat({ ... }, " ")
+  if string.sub(c, 1, 1) == ":" then
+    return c .. "<cr>"
+  end
+  return function()
+    vim.cmd(c)
+  end
 end
 M.cmd = cmd
 
