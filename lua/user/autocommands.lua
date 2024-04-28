@@ -54,32 +54,32 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 --   end,
 -- })
 
-vim.api.nvim_create_autocmd("User", {
-  pattern = "ScrollEnd",
-  callback = function()
-    -- print("----END-----------------------------------------------------")
-    vim.wo.cursorline = true
-    vim.o.tabline = "%!TabbyRenderTabline()"
-
-    vim.cmd("IndentBlanklineEnable")
-    vim.cmd("set eventignore=")
-    vim.cmd("IlluminateResume")
-  end,
-})
-
-vim.api.nvim_create_autocmd("User", {
-  pattern = "ScrollStart",
-  callback = function()
-    -- print("----START-----------------------------------------------------")
-    vim.wo.cursorline = false
-    -- freeze the tabline during scroll so it doesnt constantly re-render on every CursorMoved event
-    local tabline_tmp = vim.api.nvim_exec2([[echo TabbyRenderTabline()]], { output = true })
-    vim.o.tabline = tabline_tmp.output
-    vim.cmd("IndentBlanklineDisable")
-    vim.cmd("IlluminatePause")
-    vim.cmd("set eventignore=CursorMoved,WinScrolled")
-  end,
-})
+-- vim.api.nvim_create_autocmd("User", {
+--   pattern = "ScrollEnd",
+--   callback = function()
+--     -- print("----END-----------------------------------------------------")
+--     vim.wo.cursorline = true
+--     vim.o.tabline = "%!TabbyRenderTabline()"
+--
+--     vim.cmd("IndentBlanklineEnable")
+--     vim.cmd("set eventignore=")
+--     vim.cmd("IlluminateResume")
+--   end,
+-- })
+--
+-- vim.api.nvim_create_autocmd("User", {
+--   pattern = "ScrollStart",
+--   callback = function()
+--     -- print("----START-----------------------------------------------------")
+--     vim.wo.cursorline = false
+--     -- freeze the tabline during scroll so it doesnt constantly re-render on every CursorMoved event
+--     local tabline_tmp = vim.api.nvim_exec2([[echo TabbyRenderTabline()]], { output = true })
+--     vim.o.tabline = tabline_tmp.output
+--     vim.cmd("IndentBlanklineDisable")
+--     vim.cmd("IlluminatePause")
+--     vim.cmd("set eventignore=CursorMoved,WinScrolled")
+--   end,
+-- })
 
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = { "*.Jenkinsfile", "Jenkinsfile" },
