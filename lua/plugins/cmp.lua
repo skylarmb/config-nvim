@@ -1,31 +1,31 @@
 -- Autocompletion
 
 local kind_icons = {
-  Text = "",
-  Method = "",
-  Function = "",
-  Constructor = "",
+  Text = "",
+  Method = "",
+  Function = "",
+  Constructor = "",
   Field = "",
   Variable = "",
-  Class = "",
-  Interface = "",
-  Module = "",
-  Property = "",
-  Unit = "",
-  Value = "",
-  Enum = "",
+  Class = "",
+  Interface = "",
+  Module = "",
+  Property = "",
+  Unit = "",
+  Value = "",
+  Enum = "",
   Keyword = "",
-  Snippet = "",
-  Color = "",
-  File = "",
+  Snippet = "",
+  Color = "",
+  File = "",
   Reference = "",
-  Folder = "",
+  Folder = "",
   EnumMember = "",
-  Constant = "",
-  Struct = "",
-  Event = "",
-  Operator = "",
-  TypeParameter = "",
+  Constant = "",
+  Struct = "",
+  Event = "",
+  Operator = "",
+  TypeParameter = "",
   Copilot = "",
 }
 
@@ -49,9 +49,14 @@ local _ = {
       { "hrsh7th/cmp-buffer" },
       { "hrsh7th/cmp-path" },
       { "hrsh7th/cmp-cmdline" },
-      -- UltiSnips support
-      { "SirVer/ultisnips" },
-      { "quangnguyen30192/cmp-nvim-ultisnips" },
+      { "saadparwaiz1/cmp_luasnip" },
+      {
+        "L3MON4D3/LuaSnip",
+        -- follow latest release.
+        version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+        -- install jsregexp (optional!).
+        build = "make install_jsregexp",
+      }, -- Required, managed in cmp.lua
     },
     config = function()
       local cmp = require("cmp")
@@ -59,7 +64,11 @@ local _ = {
       cmp.setup({
         snippet = {
           expand = function(args)
-            vim.fn["UltiSnips#Anon"](args.body)
+            local luasnip = require("luasnip")
+            if not luasnip then
+              return
+            end
+            luasnip.lsp_expand(args.body)
           end,
         },
         window = {
@@ -76,15 +85,10 @@ local _ = {
             i = cmp.mapping.abort(),
             c = cmp.mapping.close(),
           }),
-          -- ["<Tab>"] = cmp_action.luasnip_supertab({
-          --   behavior = cmp.ConfirmBehavior.Replace, -- important for copilot
-          --   select = true,
-          -- }),
+          -- ["<Leader-e>"] = function()
+          --   require("luasnip").jump(1)
+          -- end,
           -- ["<S-Tab>"] = cmp_action.luasnip_shift_supertab({
-          --   behavior = cmp.ConfirmBehavior.Replace, -- important for copilot
-          --   select = true,
-          -- }),
-          -- ["<C-y>"] = cmp_action.luasnip_supertab({
           --   behavior = cmp.ConfirmBehavior.Replace, -- important for copilot
           --   select = true,
           -- }),
@@ -101,9 +105,9 @@ local _ = {
           format = function(entry, vim_item)
             vim_item.kind = kind_icons[vim_item.kind]
             vim_item.menu = ({
+              luasnip = "",
               nvim_lsp = "",
               nvim_lua = "",
-              luasnip = "",
               buffer = "",
               path = "",
               emoji = "",
@@ -112,12 +116,12 @@ local _ = {
           end,
         },
         sources = {
+          { name = "luasnip", group_index = 1, option = { show_autosnippets = true } },
           -- Copilot Source
           { name = "copilot", group_index = 2 },
           -- Other Sources
           { name = "nvim_lsp", group_index = 2 },
           { name = "path", group_index = 2 },
-          { name = "luasnip", group_index = 2 },
           -- { name = "nvim_lua" },
           -- { name = "nvim_lsp_signature_help" },
         },
@@ -163,7 +167,23 @@ local _ = {
           { name = "cmdline" },
         }),
       })
+
+      require("luasnip.loaders.from_snipmate").lazy_load({ paths = "~/.config/nvim/snippets" })
     end,
+  },
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    event = { "InsertEnter", "LspAttach" },
+    branch = "canary",
+    dependencies = {
+      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+      { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+    },
+    opts = {
+      debug = true, -- Enable debugging
+      -- See Configuration section for rest
+    },
+    -- See Commands section for default commands if you want to lazy load on them
   },
   -- lua rewrite of github official copilot plugin
   {

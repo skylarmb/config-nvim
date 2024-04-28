@@ -49,15 +49,15 @@ return {
           enable = true,
         },
         indent = { enable = true, disable = { "python", "yaml" } },
-        context_commentstring = {
-          enable = true,
-          enable_autocmd = false,
-        },
+        -- context_commentstring = {
+        --   enable = true,
+        --   enable_autocmd = false,
+        -- },
       })
     end,
   },
   -- treesitter powered auto-closing tags for html, tsx, etc.
   { "windwp/nvim-ts-autotag", event = "InsertEnter" },
   -- context aware comment formatting, e.g. for jsx render() fn
-  { "JoosepAlviste/nvim-ts-context-commentstring", event = "VeryLazy" },
+  -- { "JoosepAlviste/nvim-ts-context-commentstring", event = "VeryLazy" },
 }

@@ -13,6 +13,7 @@ local theme = {
 return {
   {
     "nanozuki/tabby.nvim",
+    enabled = true,
     lazy = false,
     priority = 25,
     init = function()

@@ -16,7 +16,7 @@ return {
           exclude = const.ignored_dirs,
         },
         open_file = {
-          quit_on_open = true,
+          quit_on_open = false,
           window_picker = {
             enable = false,
           },
@@ -28,13 +28,13 @@ return {
           git_placement = "after",
           glyphs = {
             git = {
-              unstaged = "~",
-              staged = "+",
-              renamed = "&",
-              unmerged = "!",
-              untracked = "?",
-              deleted = "-",
-              ignored = "x",
+              unstaged = "󱇨",
+              staged = "󰻭",
+              renamed = "󱀹",
+              unmerged = "󱪘",
+              untracked = "󱀶",
+              deleted = "󱀷",
+              ignored = "󰷇",
             },
           },
         },
@@ -73,9 +73,9 @@ return {
         vim.keymap.set("n", "m", api.marks.toggle, opts("Toggle Bookmark"))
         vim.keymap.set("n", "c", api.node.run.cmd, opts("Run Command"))
         vim.keymap.set("n", "e", api.tree.expand_all, opts("Expand All"))
-        vim.keymap.set("n", "i", api.node.open.horizontal, opts("Open: Horizontal Split"))
+        vim.keymap.set("n", "s", api.node.open.horizontal, opts("Open: Horizontal Split"))
         vim.keymap.set("n", "p", api.node.open.preview, opts("Open Preview"))
-        vim.keymap.set("n", "s", api.node.open.vertical, opts("Open: Vertical Split"))
+        vim.keymap.set("n", "v", api.node.open.vertical, opts("Open: Vertical Split"))
         vim.keymap.set("n", "t", api.node.open.tab_drop, opts("Open: New Tab"))
         vim.keymap.set("n", "<CR>", api.node.open.no_window_picker, opts("Open"))
         vim.keymap.set("n", "o", api.node.run.system, opts("Run System"))

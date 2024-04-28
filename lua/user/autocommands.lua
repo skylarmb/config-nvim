@@ -289,3 +289,9 @@ vim.api.nvim_create_autocmd("User", {
 --     autocmd User LspProgressStatusUpdated lua require("lualine").refresh()
 -- augroup END
 -- ]])
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = { "*.slint" },
+  callback = function()
+    vim.cmd("setlocal filetype=slint")
+  end,
+})

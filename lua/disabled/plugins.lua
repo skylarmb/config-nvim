@@ -364,6 +364,7 @@ M.disabled = {
       { "hrsh7th/cmp-buffer" },
       { "hrsh7th/cmp-path" },
       { "hrsh7th/cmp-cmdline" },
+      { "saadparwaiz1/cmp_luasnip" },
       -- UltiSnips support
       -- { "SirVer/ultisnips" },
       -- { "quangnguyen30192/cmp-nvim-ultisnips" },
@@ -372,11 +373,11 @@ M.disabled = {
       local cmp = require("cmp")
       local cmp_action = require("lsp-zero").cmp_action()
       cmp.setup({
-        -- snippet = {
-        --   expand = function(args)
-        --     vim.fn["UltiSnips#Anon"](args.body)
-        --   end,
-        -- },
+        snippet = {
+          expand = function(args)
+            require("luasnip").lsp_expand(args.body)
+          end,
+        },
         window = {
           completion = cmp.config.window.bordered(),
           documentation = cmp.config.window.bordered(),

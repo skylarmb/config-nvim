@@ -14,10 +14,10 @@ local function doscroll(lines)
 
   local neoscroll = require("neoscroll")
   local duration_ms = math.abs(lines) * base_scalar
-  local indent = require("indent_blankline.commands")
+  -- local indent = require("indent_blankline.commands")
 
   local smooth_scroll = defer.throttle_leading(function()
-    indent.refresh(false, true)
+    -- indent.refresh(false, true)
     neoscroll.scroll(lines, true, duration_ms, easing)
   end, 50)
 
@@ -74,8 +74,10 @@ return {
     init = function()
       local nvx = { "n", "v", "x" }
       -- J/K scroll faster, but not as fast as PageUp/PageDown
-      vim.keymap.set(nvx, "K", doscroll(-10), { remap = true, silent = true })
-      vim.keymap.set(nvx, "J", doscroll(10), { remap = true, silent = true })
+      -- vim.keymap.set(nvx, "K", doscroll(-10), { remap = true, silent = true })
+      -- vim.keymap.set(nvx, "J", doscroll(10), { remap = true, silent = true })
+      vim.keymap.set(nvx, "K", "10gk", { remap = false, silent = true })
+      vim.keymap.set(nvx, "J", "10gj", { remap = false, silent = true })
     end,
   },
   -- smooth cursor jump
@@ -126,25 +128,14 @@ return {
   -- dynamic identation guides
   {
     "lukas-reineke/indent-blankline.nvim",
-    lazy = false,
-    config = function()
-      require("indent_blankline").setup({
-        -- char = "▏",
-        -- char = "│",
-        -- char = " ▏ │ ▏ ▏",
-        show_trailing_blankline_indent = false,
-        show_first_indent_level = true,
-        use_treesitter = true,
-        show_current_context = false,
-        buftype_exclude = { "terminal", "nofile", "help" },
-        filetype_exclude = {
-          "help",
-          "packer",
-          "NvimTree",
-        },
-      })
-    end,
+    main = "ibl",
+    event = "BufRead",
+    opts = {},
   },
   -- -- start screen
   { "mhinz/vim-startify", lazy = false },
+
+  {
+    "aznhe21/actions-preview.nvim",
+  },
 }

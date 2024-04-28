@@ -77,6 +77,10 @@ end)
 -- always move by display lines when wrapping
 nvo("k", "gk", opts.remap)
 nvo("j", "gj", opts.remap)
+-- faster scroll
+nvo("K", "10gk", opts.remap)
+nvo("J", "10gj", opts.remap)
+
 -- beginning / end of line
 nvo("H", "^", opts.remap)
 nvo("L", "$l", opts.remap)
@@ -130,6 +134,11 @@ nvo(")", '"0p')
 set("x", "<leader>j", cmd("'<,'>join"))
 -- browse source of current file
 set("n", "<leader>gs", [[:silent !/bin/zsh -i -c 'browsesource "$(basename `git rev-parse --show-toplevel`)" %'<CR>]])
+
+-- snippets
+-- i("<Tab>", function()
+--   return require("snippy").can_expand_or_advance() and "<plug>(snippy-expand-or-advance)" or "<tab>"
+-- end)
 
 -- move lines up and down
 n("<c-n>", "<cmd>m +1<CR>")

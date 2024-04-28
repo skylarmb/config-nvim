@@ -32,10 +32,10 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
   },
   dev = {
-    path = "~/nvim_dev",
+    path = "~/workspace/nvim_dev",
     patterns = { "local" },
   },
-  install = { colorscheme = { "terafox" } },
+  install = { colorscheme = { "torchlight" } },
   checker = {
     enabled = true,
     concurrency = 1, -- set to 1 to check for updates very slowly

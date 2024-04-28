@@ -10,38 +10,38 @@ local box = {
 }
 
 local kind_icons = {
-  Text = "󰊄",
-  Method = "",
-  Function = "",
-  Constructor = "",
+  Text = "",
+  Method = "",
+  Function = "",
+  Constructor = "",
   Field = "",
   Variable = "",
-  Class = "",
-  Interface = "",
-  Module = "",
-  Property = "",
-  Unit = "",
-  Value = "",
-  Enum = "",
+  Class = "",
+  Interface = "",
+  Module = "",
+  Property = "",
+  Unit = "",
+  Value = "",
+  Enum = "",
   Keyword = "",
-  Snippet = "",
-  Color = "",
-  File = "",
+  Snippet = "",
+  Color = "",
+  File = "",
   Reference = "",
-  Folder = "",
+  Folder = "",
   EnumMember = "",
-  Constant = "",
-  Struct = "",
-  Event = "",
-  Operator = "",
-  TypeParameter = "",
+  Constant = "",
+  Struct = "",
+  Event = "",
+  Operator = "",
+  TypeParameter = "",
   Copilot = "",
 }
 
 local severity = vim.diagnostic.severity
 local severity_icons = {
-  [severity.ERROR] = "",
-  [severity.WARN] = "",
+  [severity.ERROR] = "",
+  [severity.WARN] = "",
   [severity.INFO] = "",
   [severity.HINT] = "",
   -- eslint_d = "",
@@ -263,7 +263,7 @@ local function setup_lsp()
 
   lsp.format_on_save({
     servers = {
-      ["null-ls"] = { "typescript", "typescriptreact", "javascript", "javascriptreact", "lua" },
+      ["null-ls"] = { "typescript", "typescriptreact", "javascript", "javascriptreact", "lua", "python" },
       ["tsserver"] = {},
       -- ["denols"] = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
       ["gopls"] = { "go" },
@@ -342,6 +342,10 @@ local function setup_lsp()
     },
   })
 
+  lspconfig.slint_lsp.setup({})
+
+  lspconfig.pyright.setup({})
+
   lsp.setup()
 
   ---- NULL-LS ----
@@ -357,6 +361,7 @@ local function setup_lsp()
       formatting.gofmt,
       formatting.htmlbeautifier,
       formatting.jq,
+      formatting.black,
 
       formatting.prettierd,
       formatting.prettierd,
@@ -366,6 +371,9 @@ local function setup_lsp()
       code_actions.eslint_d,
 
       hover.printenv,
+    },
+    log = {
+      level = "debug",
     },
   })
 
@@ -398,12 +406,17 @@ local function setup_lsp()
     zindex = 1001,
   }
   cmp.setup({
+    snippet = {
+      expand = function(args)
+        require("luasnip").lsp_expand(args.body)
+      end,
+    },
     sources = {
+      { name = "luasnip" },
       { name = "copilot" },
       { name = "nvim_lsp" },
       { name = "path" },
       { name = "buffer" },
-      { name = "luasnip" },
     },
     experimental = {
       ghost_text = true,
@@ -417,9 +430,9 @@ local function setup_lsp()
       format = function(entry, vim_item)
         vim_item.kind = kind_icons[vim_item.kind]
         vim_item.menu = ({
+          luasnip = "",
           nvim_lsp = "",
           nvim_lua = "",
-          luasnip = "",
           buffer = "",
           path = "",
           emoji = "",
@@ -436,6 +449,7 @@ local function setup_lsp()
       }),
     },
   })
+  require("luasnip.loaders.from_snipmate").lazy_load({ paths = "~/.config/nvim/snippets" })
 end
 
 return {
@@ -457,7 +471,6 @@ return {
       { "williamboman/mason-lspconfig.nvim" }, -- Optional
       { "jose-elias-alvarez/null-ls.nvim" },
       { "jay-babu/mason-null-ls.nvim" },
-      { "L3MON4D3/LuaSnip" }, -- Required, managed in cmp.lua
 
       -- Shims / API for tsserver functionality
       { "jose-elias-alvarez/typescript.nvim" },
@@ -470,6 +483,14 @@ return {
       { "hrsh7th/cmp-cmdline" },
       { "zbirenbaum/copilot.lua" },
       { "zbirenbaum/copilot-cmp" },
+      {
+        "L3MON4D3/LuaSnip",
+        -- follow latest release.
+        version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+        -- install jsregexp (optional!).
+        build = "make install_jsregexp",
+      }, -- Required, managed in cmp.lua
+      { "saadparwaiz1/cmp_luasnip" },
     },
     config = setup_lsp,
   },
@@ -503,5 +524,19 @@ return {
         stack_floating_preview_windows = false,
       })
     end,
+  },
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    event = { "InsertEnter", "LspAttach" },
+    branch = "canary",
+    dependencies = {
+      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+      { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+    },
+    opts = {
+      debug = true, -- Enable debugging
+      -- See Configuration section for rest
+    },
+    -- See Commands section for default commands if you want to lazy load on them
   },
 }
