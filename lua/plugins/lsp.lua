@@ -263,7 +263,7 @@ local function setup_lsp()
 
   lsp.format_on_save({
     servers = {
-      ["null-ls"] = { "typescript", "typescriptreact", "javascript", "javascriptreact", "lua", "python" },
+      ["null-ls"] = { "typescript", "typescriptreact", "javascript", "javascriptreact", "python" }, -- "lua", "dockerfile" },
       ["tsserver"] = {},
       -- ["denols"] = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
       ["gopls"] = { "go" },

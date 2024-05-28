@@ -1,21 +1,40 @@
 -- DAP,
 return {
   {
+    "ray-x/go.nvim",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "ray-x/guihua.lua",
+      "neovim/nvim-lspconfig",
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-neotest/nvim-nio",
+      "theHamsta/nvim-dap-virtual-text",
+      "rcarriga/nvim-dap-ui",
+    },
+    config = function()
+      require("go").setup()
+    end,
+    event = { "CmdlineEnter" },
+    ft = { "go", "gomod" },
+    build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+  },
+  {
     "rcarriga/nvim-dap-ui",
     cmd = { "DapToggleBreakpoint", "DapToggleRepl", "DapStepInto" },
     lazy = true,
     dependencies = {
       { "mfussenegger/nvim-dap" },
-      {
-        "ravenxrz/DAPInstall.nvim",
-        lazy = true,
-        config = function()
-          local dap_install = require("dap-install")
-          dap_install.setup({})
-          dap_install.config("python", {})
-          -- dap_install.config("node", {})
-        end,
-      },
+      -- {
+      --   "ravenxrz/DAPInstall.nvim",
+      --   lazy = true,
+      --   config = function()
+      --     local dap_install = require("dap-install")
+      --     dap_install.setup({})
+      --     dap_install.config("python", {})
+      --     dap_install.config("node", {})
+      --     dap_install.config("go", {})
+      --   end,
+      -- },
     },
     opts = {
       expand_lines = true,
